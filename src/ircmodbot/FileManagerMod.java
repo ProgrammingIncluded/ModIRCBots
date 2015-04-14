@@ -1,10 +1,15 @@
+package ircmodbot;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.io.*;
 
-// A neccessary mod that manages file input and out put for each custom
-// mods the require file writing or saving.
+/**
+ * A neccessary mod that manages file input and out put for each custom
+ * mods that require file writing or saving.
+ * @author Charles
+ *
+ */
 public class FileManagerMod extends Module
 {
    public static final int MAX_USERS = 10;
@@ -16,7 +21,7 @@ public class FileManagerMod extends Module
    private int registeredUsers;
    //private static String rootDir;
 
-   FileManagerMod()
+   public FileManagerMod()
    {
       super("FM");
       moduleName = "File Manager Mod";

@@ -1,18 +1,27 @@
+package ircmodbot;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.jibble.pircbot.*;
 
-public class SKKBot extends PircBot 
+/**
+ * Generic bot class to create a mod bot.
+ * Add modules to the bot for different abilities. Right now, can be
+ * optimized by adding a list for quicker command find. Also, commands
+ * have to be unique. Commands can also not be chained.
+ * @author Charles
+ *
+ */
+public class ModBot extends PircBot 
 {
    private ArrayList<Module> modules;
    private String channel;
 
-   public SKKBot() 
+   public ModBot() 
    {
-      this("SKKBot");
+      this("ModBot");
    }
 
-   public SKKBot(String name) 
+   public ModBot(String name) 
    {
       this.setName(name);
       modules = new ArrayList<Module>();
@@ -25,15 +34,16 @@ public class SKKBot extends PircBot
       Module currentModule;
       String trigger;
 
+      // Perhaps use list instead in order to search faster?
       while(it.hasNext())
       {
          currentModule = it.next();
          trigger = currentModule.getTrigger();
-         if(OpHelp.command(message, trigger))
+         String modMessage = OpHelp.command(message, trigger);
+         if(modMessage.length() != 0)
          {
-            // Remove the key specifier and give it to the module to process
-            // commands.
-            message = OpHelp.removeCommand(message, trigger);
+            // No duplicate messages!
+            message = modMessage;
             currentModule.onMessage(channel, sender, login, hostname, message);
          }
       }
@@ -58,17 +68,17 @@ public class SKKBot extends PircBot
       Module currentModule;
       String trigger;
 
+      // Perhaps use list instead in order to search faster?
       while(it.hasNext())
       {
          currentModule = it.next();
          trigger = currentModule.getTrigger();
-         if(trigger.equalsIgnoreCase(message.substring(0, trigger.length())))
+         String modMessage = OpHelp.command(message, trigger);
+         if(modMessage.length() != 0)
          {
-            // Remove the key specifier and give it to the module to process
-            // commands.
-            message = message.substring(trigger.length()+1, message.length());
-            currentModule.onPrivateMessage(sender, login,
-               hostname, message);
+            // No duplicate messages!
+            message = modMessage;
+            currentModule.onPrivateMessage(sender, login, hostname, message);
          }
       }
    }

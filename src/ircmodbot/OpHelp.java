@@ -1,3 +1,4 @@
+package ircmodbot;
 
 /**
  * Class for helping with some parsing with commands. 
@@ -33,34 +34,29 @@ public class OpHelp
       return str.substring(index,endex);
    }
 
-   static public boolean command(String str, String command)
+   /**
+    * Helper function to check whether or not a command has been issued
+    * within the given text. Is case sensitive. Returns str with removed
+    * command if applicable or returns null.
+    */
+   static public String command(String str, String command)
    {
+      String result = "";
       if(command == "" || command.length() == 0)
-      {
-         return true;
-      }
-      else if(subString(str, 0, command.length()).equalsIgnoreCase(command))
-      {
-         return true;
-      }
-      return false;
-   }
-
-   static public String removeCommand(String str, String command)
-   {
-      if(command == "")
       {
          return str;
       }
-      else if(str.length() != command.length())
+      result = subString(str, 0, command.length());
+      if(result.equals(command))
       {
-         str = subString(str, command.length()+1, str.length());
+         // Check if next value is space or only this value..
+         if(str.length() == command.length() 
+            || (str.length() >= command.length() + 1 
+            && str.charAt(command.length()) == ' '))
+            return subString(str, command.length()+1, str.length());
+            
+         return "";
       }
-      else
-      {
-         str = "";
-      }
-
-      return str;
+      return "";
    }
 }

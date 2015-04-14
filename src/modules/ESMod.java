@@ -1,10 +1,14 @@
+package modules;
+import ircmodbot.Module;
+import ircmodbot.OpHelp;
+
 
 public class ESMod extends Module
 {
    private String regenPass;
    private String randPass;
 
-   ESMod()
+   public ESMod()
    {
       super("ESM");
       moduleName = "Exit System Mod";
@@ -15,7 +19,7 @@ public class ESMod extends Module
    public void onMessage(String channel, String sender,
       String login, String hostname, String message)
    {
-      if(OpHelp.command(message,"exit"))
+      if(OpHelp.command(message,"exit").length() != 0)
       {
          message = OpHelp.subString(message ,5, message.length());
          if(message.equalsIgnoreCase(randPass))
@@ -29,11 +33,11 @@ public class ESMod extends Module
    public void onPrivateMessage(String sender, String login, 
       String hostname, String message)
    {
-      if(OpHelp.command(message, "pregen"))
+      message = OpHelp.command(message, "pregen");
+      if(message.length() != 0)
       {
-         message = OpHelp.removeCommand(message, "pregen");
          System.out.println(message);
-         if(OpHelp.command(message, regenPass))
+         if(OpHelp.command(message, regenPass).length() != 0)
          {
             regenPassword();
             bot.sendMessage(sender, randPass);

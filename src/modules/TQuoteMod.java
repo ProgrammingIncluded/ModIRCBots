@@ -1,3 +1,7 @@
+package modules;
+import ircmodbot.Module;
+import ircmodbot.OpHelp;
+
 import java.util.ArrayList;
 
 import org.jibble.pircbot.User;
@@ -12,7 +16,7 @@ public class TQuoteMod extends Module
    private int MAX_PHASE;
    private String TARGET_PHRASE;
 
-   TQuoteMod(QuoteMod qMod)
+   public TQuoteMod(QuoteMod qMod)
    {
       super("");
       qm = qMod;
@@ -28,9 +32,9 @@ public class TQuoteMod extends Module
    public void onMessage(String channel, String sender,
       String login, String hostname, String message)
    {
-      if(OpHelp.command(message, TARGET_PHRASE))
+      String username = OpHelp.command(message, TARGET_PHRASE);
+      if(username.length() != 0)
       {
-         String username = OpHelp.removeCommand(message, TARGET_PHRASE);
          if(target(username))
          {
             bot.sendMessage(channel,username + " has now been targeted.");
@@ -48,7 +52,7 @@ public class TQuoteMod extends Module
             if(chances.get(index) <= 0)
             {
                bot.sendMessage(channel,user.get(index)+" has been lost "
-                  + "from targetting.");
+                  + "from targeting.");
                chances.remove(index);
                user.remove(index);
             }
@@ -76,7 +80,7 @@ public class TQuoteMod extends Module
                + "is already targeted. ");
          return false;
       }
-      else if(name == bot.getNick())
+      else if(name.equals(bot.getNick()))
       {
          bot.sendMessage(bot.getChannelName(), "No.");
          return false;

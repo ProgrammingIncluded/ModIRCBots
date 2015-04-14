@@ -1,9 +1,13 @@
+package modules;
+import ircmodbot.Module;
+import ircmodbot.OpHelp;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class InfoMod extends Module
 {
-   InfoMod()
+   public InfoMod()
    {
       super("SKKI");
       moduleName = "InfoMod";
@@ -12,11 +16,11 @@ public class InfoMod extends Module
    public void onMessage(String channel, String sender,
       String login, String hostname, String message)
    {
-      if(OpHelp.command(message, "truepurpose"))
+      if(OpHelp.command(message, "truepurpose").length() != 0)
       {
          bot.sendNotice(channel, "Created so that senpai can notice me.");
       }
-      else if(OpHelp.command(message, "about"))
+      else if(OpHelp.command(message, "about").length() != 0)
       {
          bot.sendNotice(channel, "Created for different IRC functions"
             + " such as leaving messages when people are offline. "
@@ -51,7 +55,7 @@ public class InfoMod extends Module
       }
       for(int x = 1; x < str.length; ++x)
       {
-         display += "," + str[x];
+         display += ", " + str[x];
       }
       return display;
    }

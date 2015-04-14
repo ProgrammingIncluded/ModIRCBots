@@ -1,3 +1,4 @@
+package ircmodbot;
 import org.jibble.pircbot.*;
 
 public abstract class Module 
@@ -5,7 +6,7 @@ public abstract class Module
    protected String trigger;
    protected String moduleName;
 
-   protected SKKBot bot;
+   protected ModBot bot;
 
    public Module()
    {
@@ -17,7 +18,7 @@ public abstract class Module
       this(null, triggerWord);
    }
 
-   public Module(SKKBot bot, String triggerWord)
+   public Module(ModBot bot, String triggerWord)
    {
       if(!setBot(bot))
       {
@@ -39,7 +40,7 @@ public abstract class Module
    abstract public void onPrivateMessage(String sender, String login, 
       String hostname, String message);
 
-   public boolean setBot(SKKBot bot)
+   public boolean setBot(ModBot bot)
    {
       if(bot == null)
       {

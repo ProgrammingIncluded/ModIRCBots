@@ -1,3 +1,7 @@
+package modules;
+import ircmodbot.Module;
+import ircmodbot.OpHelp;
+
 import java.util.Calendar;
 import java.util.Random;
 
@@ -5,7 +9,7 @@ import org.jibble.pircbot.Colors;
 
 public class QuoteMod extends Module
 {
-   QuoteMod()
+   public QuoteMod()
    {
       super("QM");
       moduleName = "Quoting Mod";
@@ -33,7 +37,7 @@ public class QuoteMod extends Module
    {
       int year = Calendar.getInstance().get(Calendar.YEAR);
       String name = message.substring(0, message.indexOf(' '));
-      message = OpHelp.removeCommand(message, name);
+      message = OpHelp.command(message, name);
       bot.sendMessage(channel, Colors.BOLD + randColor()
          + "\"" + message +  "\"" + Colors.NORMAL + " - "
          + name + ", " + year);

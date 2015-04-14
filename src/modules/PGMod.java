@@ -1,4 +1,10 @@
+package modules;
+import ircmodbot.Module;
 
+
+/**
+ * A simple dummy test module.
+ */
 public class PGMod extends Module
 {
    PGMod()
