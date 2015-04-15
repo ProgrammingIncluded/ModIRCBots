@@ -33,7 +33,17 @@ public class QuoteMod extends Module
       return ;
    }
 
-   private void displayQuote(String channel,String message)
+   public void noticeQuote(String sender, String message)
+   {
+      int year = Calendar.getInstance().get(Calendar.YEAR);
+      String name = message.substring(0, message.indexOf(' '));
+      message = OpHelp.command(message, name);
+      bot.sendNotice(sender, Colors.BOLD + randColor()
+         + "\"" + message +  "\"" + Colors.NORMAL + " - "
+         + name + ", " + year);
+   }
+   
+   public void displayQuote(String channel,String message)
    {
       int year = Calendar.getInstance().get(Calendar.YEAR);
       String name = message.substring(0, message.indexOf(' '));
@@ -69,7 +79,7 @@ public class QuoteMod extends Module
             color = Colors.GREEN;
             break;
          case 6:
-            color = Colors.YELLOW;
+            color = Colors.BLACK;
             break;
          case 7: 
             color = Colors.OLIVE;

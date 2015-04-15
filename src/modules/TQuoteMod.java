@@ -37,7 +37,7 @@ public class TQuoteMod extends Module
       {
          if(target(username))
          {
-            bot.sendMessage(channel,username + " has now been targeted.");
+            bot.sendNotice(sender,username + " has now been targeted.");
          }
          
       }
@@ -48,10 +48,10 @@ public class TQuoteMod extends Module
          {
             chances.add(index, chances.get(index) - 1);
             String newMessage = sender + " " + message;
-            qm.onMessage(channel, sender, login, hostname, newMessage);
+            qm.noticeQuote(sender, newMessage);
             if(chances.get(index) <= 0)
             {
-               bot.sendMessage(channel,user.get(index)+" has been lost "
+               bot.sendNotice(sender,user.get(index)+" has been lost "
                   + "from targeting.");
                chances.remove(index);
                user.remove(index);

@@ -30,30 +30,44 @@ public class ZoraelMod extends Module
    {
       int linkSize = 5;
       int tries = DEF_TRIES;
-      String command = OpHelp.command(message, "Youtube");
-      
-      //if()
-      
-      if(OpHelp.command(message, "deepsearch").length() != 0)
-      {
-         linkSize = 7;
-         bot.sendMessage(channel, 
-            "Going into the deep reaches to find his potential work."
-            + " This may take some time.");
-         tries = DEF_DEEP_TRIES;
-      }
-      
       String link = "";
-      try
+      String command = OpHelp.command(message, "Youtube");
+      if(command.length() != 0)
       {
-         link = generateRandILink("http://imgur.com/",linkSize, tries);
+         try
+         {
+            link = generateRandILink("http://youtube.com/watch?v=",
+               11, tries);
+         }
+         catch(NoSuchElementException e)
+         {
+            bot.sendMessage(channel, "Unable to determine the creator.");
+            return;
+         }
       }
-      catch(NoSuchElementException e)
+      else
       {
-         bot.sendMessage(channel, "Unable to determine the creator.");
-         return;
+         if(OpHelp.command(message, "deepsearch").length() != 0)
+         {
+            linkSize = 7;
+            bot.sendMessage(channel, 
+               "Going into the deep reaches to find his potential work."
+               + " This may take some time.");
+            tries = DEF_DEEP_TRIES;
+         }
+         
+
+         try
+         {
+            link = generateRandILink("http://i.imgur.com/",linkSize, tries);
+         }
+         catch(NoSuchElementException e)
+         {
+            bot.sendMessage(channel, "Unable to determine the creator.");
+            return;
+         }
       }
-      
+
       // Create confirmation message.
       String confirmMessage = sender + " ";
       if(Math.random() < 0.5)
