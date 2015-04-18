@@ -1,6 +1,11 @@
 package ircmodbot;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.PropertyConfigurator;
 import org.jibble.pircbot.*;
 
 /**
@@ -8,6 +13,8 @@ import org.jibble.pircbot.*;
  * Add modules to the bot for different abilities. Right now, can be
  * optimized by adding a list for quicker command find. Also, commands
  * have to be unique. Commands can also not be chained.
+ * 
+ * Configure must be first called to use class.
  * @author Charles
  *
  */
@@ -15,16 +22,18 @@ public class ModBot extends PircBot
 {
    private ArrayList<Module> modules;
    private String channel;
+   private FileMPermissions filePerm;
 
    public ModBot() 
    {
       this("ModBot");
    }
 
-   public ModBot(String name) 
+   public ModBot(String name)
    {
       this.setName(name);
       modules = new ArrayList<Module>();
+      filePerm = new FileMPermissions("whitelist.txt", "blacklist.txt");
    }
 
    public void onMessage(String channel, String sender,
@@ -34,6 +43,10 @@ public class ModBot extends PircBot
       Module currentModule;
       String trigger;
 
+      // Check global permissions.
+      if(!filePerm.getGlobalPermission(sender, "test"))
+         return;
+      
       // Perhaps use list instead in order to search faster?
       while(it.hasNext())
       {
@@ -116,5 +129,20 @@ public class ModBot extends PircBot
    public String getChannelName()
    {
       return channel;
+   }
+
+   /**
+    * Function to first call to set up logging.
+    */
+   public static boolean configure(String logPropFile)
+   {
+      File file = new File(logPropFile);
+      if(!file.exists() == false)
+      {
+         PropertyConfigurator.configure(file.getAbsolutePath());
+         return true;
+      }
+      BasicConfigurator.configure();
+      return false;
    }
 }

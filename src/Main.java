@@ -9,14 +9,15 @@ public class Main {
    public static void main(String[] args) throws Exception {
 
       // Now start our bot up.
+      ModBot.configure("system/log4j.properties");
       ModBot bot = new ModBot("SKKBot");
       // Enable debugging output.
       bot.setVerbose(true);
       // Connect to the IRC server.
       bot.connect("irc.rizon.net");
       // Join the #pircbot channel.
-      bot.joinChannel("#lelandcs");
-      bot.addChannelName("#lelandcs");
+      bot.joinChannel("#lelandcstest");
+      bot.addChannelName("#lelandcstest");
 
       // Add modules to bot
       bot.addModule(new ESMod());
