@@ -16,4 +16,5 @@ lib/
 
 *.jar
 
-resource/
+resources/
+system/log4j.properties
