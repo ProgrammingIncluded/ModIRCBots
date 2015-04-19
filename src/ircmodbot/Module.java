@@ -8,17 +8,17 @@ public abstract class Module
 
    protected ModBot bot;
 
-   public Module()
+   protected Module()
    {
       this(null, null);
    }
 
-   public Module(String triggerWord)
+   protected Module(String triggerWord)
    {
       this(null, triggerWord);
    }
-
-   public Module(ModBot bot, String triggerWord)
+   
+   protected Module(ModBot bot, String moduleName, String triggerWord)
    {
       if(!setBot(bot))
       {
@@ -30,6 +30,11 @@ public abstract class Module
          triggerWord = "ERR" + Math.random() * 10;
       }
       moduleName = "Unknownmod" + Math.random();
+   }
+
+   protected Module(ModBot bot, String triggerWord)
+   {
+      this(bot, null, triggerWord);
    }
 
    abstract public void onMessage(String channel, String sender,

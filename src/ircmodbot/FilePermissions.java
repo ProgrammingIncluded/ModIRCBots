@@ -23,9 +23,9 @@ import org.apache.log4j.PropertyConfigurator;
  * @author Charles
  *
  */
-public class FileMPermissions extends FileSystem
+public class FilePermissions extends FileSystem
 {
-   static final Logger LOGGER = Logger.getLogger(FileMPermissions.class);
+   static final Logger LOGGER = Logger.getLogger(FilePermissions.class);
    /* Static Const. Variables */
    // Assumed in root folder.
    static final String DEF_WHITELIST_FILE = "whitelist.txt";
@@ -35,7 +35,7 @@ public class FileMPermissions extends FileSystem
    private File whiteListFile = null;
    private File blackListFile = null;
 
-   FileMPermissions(String whiteListPath, String blackListPath) 
+   FilePermissions(String whiteListPath, String blackListPath) 
    {
       if(!setWhiteList(whiteListPath))
       {
@@ -61,20 +61,32 @@ public class FileMPermissions extends FileSystem
       }
    }
    
+   
+   /**
+    * Gets the local mod permission. With specified root file for the
+    * mod file.
+    * @return
+    */
+   /*
+   public boolean getModPermission(User user, Module mod, )
+   {
+      
+   }
+   */
    /**
     * Gets the global permission of the user. If user is 
     * in both files, Blacklist takes dominance.
     */
-   public boolean getGlobalPermission(User user, String modName)
+   public boolean getGlobalPermission(User user)
    {
-      return getGlobalPermission(user.getName(), modName);
+      return getGlobalPermission(user.getName());
    }
    
    /**
     * Gets the global permission of the user. If user is 
     * in both files, Blacklist takes dominance.
     */
-   public boolean getGlobalPermission(String username, String modName)
+   public boolean getGlobalPermission(String username)
    {
       //Check blacklist first.
       ArrayList<String> names = readBlackList();

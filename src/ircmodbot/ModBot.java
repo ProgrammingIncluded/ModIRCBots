@@ -22,7 +22,7 @@ public class ModBot extends PircBot
 {
    private ArrayList<Module> modules;
    private String channel;
-   private FileMPermissions filePerm;
+   private FilePermissions filePerm;
 
    public ModBot() 
    {
@@ -33,7 +33,7 @@ public class ModBot extends PircBot
    {
       this.setName(name);
       modules = new ArrayList<Module>();
-      filePerm = new FileMPermissions("whitelist.txt", "blacklist.txt");
+      filePerm = new FilePermissions("whitelist.txt", "blacklist.txt");
    }
 
    public void onMessage(String channel, String sender,
@@ -44,7 +44,7 @@ public class ModBot extends PircBot
       String trigger;
 
       // Check global permissions.
-      if(!filePerm.getGlobalPermission(sender, "test"))
+      if(!filePerm.getGlobalPermission(sender))
          return;
       
       // Perhaps use list instead in order to search faster?

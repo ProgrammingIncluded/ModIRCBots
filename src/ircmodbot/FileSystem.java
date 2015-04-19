@@ -28,7 +28,6 @@ public class FileSystem
    public File getFilePath(String relPath) throws IOException
    {
       File result = new File(root.getPath(), relPath);
-      System.out.println(result.getAbsolutePath());
       if(result.exists() == false)
          throw new IOException();
       return result;

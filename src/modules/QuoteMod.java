@@ -46,7 +46,15 @@ public class QuoteMod extends Module
    public void displayQuote(String channel,String message)
    {
       int year = Calendar.getInstance().get(Calendar.YEAR);
-      String name = message.substring(0, message.indexOf(' '));
+      String name = null;
+      try
+      {
+         name = message.substring(0, message.indexOf(' '));
+      }
+      catch(StringIndexOutOfBoundsException e)
+      {
+         return; // No need to log...
+      }
       message = OpHelp.command(message, name);
       bot.sendMessage(channel, Colors.BOLD + randColor()
          + "\"" + message +  "\"" + Colors.NORMAL + " - "

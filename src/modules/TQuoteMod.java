@@ -6,8 +6,14 @@ import java.util.ArrayList;
 
 import org.jibble.pircbot.User;
 
-// Allows everything that the user says to be quoted.
-// Used with QuoteMod.
+/**
+ * Allows everything that the user says to be quoted.
+ * Used with QuoteMod.
+ * 
+ * Demonstrates how one mod can work with another.
+ * @author Charles
+ *
+ */
 public class TQuoteMod extends Module
 {
    private ArrayList<String>user;
