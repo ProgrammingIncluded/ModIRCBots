@@ -7,6 +7,14 @@ import java.util.Random;
 
 import org.jibble.pircbot.Colors;
 
+/**
+ * Mod to allow SKKBot to output quote like text.
+ * Used for quoting people.
+ * 
+ * Format: Keyword Username Message
+ * @author Charles Chen
+ *
+ */
 public class QuoteMod extends Module
 {
    public QuoteMod()

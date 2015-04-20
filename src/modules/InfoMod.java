@@ -5,6 +5,14 @@ import ircmodbot.OpHelp;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * Mod to help display the current modules loaded into the
+ * bot.
+ * 
+ * Format: Keyword
+ * @author Charles Chen
+ *
+ */
 public class InfoMod extends Module
 {
    public InfoMod()
