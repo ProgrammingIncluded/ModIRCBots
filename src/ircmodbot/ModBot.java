@@ -23,6 +23,7 @@ public class ModBot extends PircBot
    private ArrayList<Module> modules;
    private String channel;
    private FilePermissions filePerm;
+   private UserBase userBase;
 
    public ModBot() 
    {
@@ -34,6 +35,7 @@ public class ModBot extends PircBot
       this.setName(name);
       modules = new ArrayList<Module>();
       filePerm = new FilePermissions("whitelist.txt", "blacklist.txt");
+      userBase = new UserBase(filePerm);
    }
 
    public void onMessage(String channel, String sender,
@@ -46,6 +48,9 @@ public class ModBot extends PircBot
       // Check global permissions.
       if(!filePerm.getGlobalPermission(sender))
          return;
+      
+      if(!sender.equalsIgnoreCase(getName()))
+         userBase.registerUser(sender);
       
       // Perhaps use list instead in order to search faster?
       while(it.hasNext())
@@ -66,6 +71,8 @@ public class ModBot extends PircBot
       String login,String hostname) 
    {
       Iterator<Module> it = modules.iterator();
+      if(!sender.equalsIgnoreCase(getName()))
+         userBase.registerUser(sender);
       while(it.hasNext())
       {
          // Send directly to all modules if needed. Perhaps do a check

@@ -3,9 +3,6 @@ package ircmodbot;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.PropertyConfigurator;
-
 /**
  * Interface to implement when you want to 
  * work with files in system.
@@ -33,6 +30,11 @@ public class FileSystem
       return result;
    }
 
+   public boolean setRoot(String root)
+   {
+      return setRoot(new File(root));
+   }
+   
    public boolean setRoot(File root)
    {
       if(root == null || root.exists() == false)
