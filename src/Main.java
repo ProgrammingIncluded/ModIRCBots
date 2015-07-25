@@ -16,8 +16,8 @@ public class Main {
       // Connect to the IRC server.
       bot.connect("irc.rizon.net");
       // Join the #pircbot channel.
-      bot.joinChannel("#lelandcs");
-      bot.addChannelName("#lelandcs");
+      bot.joinChannel("#skk");
+      bot.addChannelName("#skk");
 
       // Add modules to bot
       bot.addModule(new ESMod());

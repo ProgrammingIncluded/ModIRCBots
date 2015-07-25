@@ -25,7 +25,7 @@ public class User
    {
       if(!setName(name))
       {
-         name = "SKK";
+         name = "ERRNO";
       }
       else if(!setID(ID))
       {

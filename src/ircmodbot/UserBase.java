@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.log4j.Logger;
@@ -24,18 +25,22 @@ import org.json.simple.parser.ParseException;
  * @author Charles
  *
  */
-public class UserBase extends FileSystem
+public class UserBase extends FileData<User>
 {
    // The logger.
    private static final Logger LOGGER = Logger.getLogger(UserBase.class);
    public static final int MAX_MEM_USERS = 2000;
-   
+
    private int userCount = 0;
    private FilePermissions filePerm;
-   
+
    // Container to store the Users into memory.
-   public ArrayDeque<MutablePair<String, User>>userMem; // SO MANY CHOICES :>
-   
+   public ArrayDeque<MutablePair<String, User>>userMem;
+
+   /**
+    * Basic constructor for class. Requires FilePermissions as class
+    * deals with file manipulation internally.
+    */
    UserBase(FilePermissions fm)
    {
       if(fm == null)
@@ -52,7 +57,7 @@ public class UserBase extends FileSystem
       loadUsersIntoMemory();
       filePerm = fm;
    }
-   
+
    /**
     * Function to register given name with the system. Returns user info.
     * TODO: Remove reading of database twice.
@@ -64,13 +69,17 @@ public class UserBase extends FileSystem
       User user = getUser(name);
       if(user != null) // User registered.
          return user;
-      
+
       user = new User(name, 1+userCount);
       User users[] = {user};
-      addUsersIntoDataBase(users);
+      addDataToFile("userdata.json",users);
       return user;
    }
-   
+
+   /**
+    * Function to get user from the either memory or file. Main
+    * function to call.
+    */
    public User getUser(String name)
    {
       if(!filePerm.getGlobalPermission(name))
@@ -80,7 +89,10 @@ public class UserBase extends FileSystem
          return result;
       return getUserInDataBase(name);
    }
-   
+
+   /**
+    * Adds given user to runtime memory.
+    */
    private boolean addUserToMemory(User usr)
    {
       if(usr == null)
@@ -92,42 +104,57 @@ public class UserBase extends FileSystem
       userMem.addFirst(new MutablePair<String, User>(usr.getName(), usr));
       return true;
    }
-   
-   private User getUserInDataBase(String name)
+
+   /**
+    * Overwritten function from FileSystem to convert raw data to User.
+    */
+   public User rawDataToData(String idVal, String[] key, String[] data)
    {
       User result = null;
-      JSONArray users = readJson();
-      if(users == null)
-         return null;
+      long id = -1;
       try
       {
-         Iterator<?> it = users.iterator();
-         while(it.hasNext())
-         {
-            JSONObject curUser = (JSONObject)it.next();
-            if(curUser.get("name").toString().equalsIgnoreCase(name))
-            {
-               long id = Long.parseLong(curUser.get("id").toString());
-               result = new User(name, id);
-               addUserToMemory(result);
-               break;
-            }
-         }
-      }
-      catch(NullPointerException e)
-      {
-         LOGGER.error("Unable to read UserData in UserBase.", e);
-         LOGGER.debug("Unable to read UserData in UserBase", e);
+         id = Long.parseLong(data[0]);
       }
       catch(NumberFormatException e)
       {
-         LOGGER.error("Unable to read UserData in UserBase.", e);
-         LOGGER.debug("Unable to read UserData in UserBase", e);
+         LOGGER.error("Unable to read Long in UserBase.", e);
+         LOGGER.debug("Unable to read Long in UserBase.", e);
       }
-      
+
+      result = new User(idVal, id);
       return result;
    }
    
+   public LinkedHashMap<String, String> dataToRawData(User data)
+   {
+      LinkedHashMap<String, String> result = 
+         new LinkedHashMap<String, String>(2);
+
+      result.put("name", data.getName());
+      result.put("id", String.valueOf(data.getID()));
+
+      return result;
+   }
+   
+   /**
+    * Helper function to get user from file.
+    */
+   private User getUserInDataBase(String name)
+   {
+      String dataKeys[] = {"id"};
+      User resultUser = getDataInFile("userdata.json", "name", dataKeys);
+      
+      if(resultUser != null)
+         addUserToMemory(resultUser);
+
+      return resultUser;
+   }
+
+   /**
+    * Helper function to get user from runtime memory.
+    * Called from getUser().
+    */
    private User getUserInMemory(String name)
    {
       Iterator<MutablePair<String, User>> it = userMem.iterator();
@@ -144,32 +171,7 @@ public class UserBase extends FileSystem
       }
       return result;
    }
-   
-   private JSONArray readJson()
-   {
-      JSONParser parser = new JSONParser();
-      JSONObject obj = null;
-      try
-      {
-         obj = (JSONObject) parser.parse(
-            new FileReader(this.getFilePath("userdata.json")));
-      }
-      catch(IOException e)
-      {
-         LOGGER.error("Unable to read UserData in UserBase", e);
-         LOGGER.debug("Unable to read UserData in UserBase", e);
-      } 
-      catch (ParseException e)
-      {
-         LOGGER.error("Unable to read UserData in UserBase.", e);
-         LOGGER.debug("Unable to read UserData in UserBase", e);
-      }
-      JSONArray users = null;
-      if(obj != null)
-         users = (JSONArray) obj.get("users");
-      return users;
-   }
-   
+
    /**
     * Reads the user files and updates user count.
     * Clears any old parsed memory objects.
@@ -177,7 +179,7 @@ public class UserBase extends FileSystem
    private void loadUsersIntoMemory()
    {
       // Put parse json here.
-      JSONArray users = readJson();
+      JSONArray users = readJson("userdata.json");
       if(users == null)
          return ;
       userCount = users.size();
@@ -188,60 +190,6 @@ public class UserBase extends FileSystem
          long id = Long.parseLong(curUser.get("id").toString());
          String name = curUser.get("name").toString();
          userMem.add(new MutablePair<String, User>(name, new User(name, id)));
-      }
-   }
-   
-   @SuppressWarnings("unchecked")
-   private void addUsersIntoDataBase(User users[])
-   {
-      if(users == null)
-         return ;
-      JSONArray userJSON = new JSONArray();
-      for(User user : users)
-      {
-         ++userCount;
-         JSONObject userData = new JSONObject();
-         userData.put("name", user.getName());
-         userData.put("id", user.getID());
-         userJSON.add(userData);
-      }
-      // Add old data back.
-      JSONArray finalArray = readJson();
-      if(finalArray == null)
-         finalArray = userJSON;
-      else 
-         appendJsonArray(finalArray, userJSON);
-         
-      JSONObject container = new JSONObject();
-      container.put("users", finalArray);
-      try
-      {
-         File file = this.getFilePath("userdata.json");
-         if(!file.exists())
-            file.createNewFile();
-         FileWriter fileWriter = new FileWriter(file);
-         fileWriter.write(container.toJSONString());
-         fileWriter.flush();
-         fileWriter.close();
-      }
-      catch (IOException e)
-      {
-         LOGGER.error("Unable to open UserData file.", e);
-         System.exit(1);
-      }
-   }
-   
-   /**
-    * Appends one JSONArray to another.
-    */
-   @SuppressWarnings("unchecked")
-   private void appendJsonArray(JSONArray array, JSONArray value)
-   {
-      if(array == null || value == null)
-         return;
-      for(Object obj : value)
-      {
-         array.add(obj);
       }
    }
 }

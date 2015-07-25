@@ -173,6 +173,7 @@ public class FilePermissions extends FileSystem
    {
       return parseList(blackListFile);
    }
+   
    /**
     * Helper function to parse lists.
     */

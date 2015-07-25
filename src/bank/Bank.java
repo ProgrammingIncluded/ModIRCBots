@@ -7,6 +7,18 @@ package bank;
  */
 public class Bank
 {
+   /**
+    * Default constructor for bank.
+    */
+   Bank()
+   {
+      
+      
+   }
+   
+   /**
+    * Creates a bank acount for the user.
+    */
    public void createAccount()
    {
       
