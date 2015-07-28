@@ -25,17 +25,13 @@ import org.json.simple.parser.ParseException;
  * @author Charles
  *
  */
-public class UserBase extends FileData<User>
+public class UserBase extends FileMemory<User>
 {
    // The logger.
    private static final Logger LOGGER = Logger.getLogger(UserBase.class);
    public static final int MAX_MEM_USERS = 2000;
 
-   private int userCount = 0;
    private FilePermissions filePerm;
-
-   // Container to store the Users into memory.
-   public ArrayDeque<MutablePair<String, User>>userMem;
 
    /**
     * Basic constructor for class. Requires FilePermissions as class
@@ -53,27 +49,32 @@ public class UserBase extends FileData<User>
          LOGGER.error("Unable to set root directory for UserBase.");
          System.exit(1);
       }
-      userMem = new ArrayDeque<MutablePair<String, User>>(MAX_MEM_USERS);
+
+      // Set up FileData attributes.
+      setDefIdKey("name");
+      setContainerName("users");
+      setDefFileName("userdata.json");
+
+      String[] dataKeys = {"id"};
+      setDefDataKeys(dataKeys);
+
       loadUsersIntoMemory();
       filePerm = fm;
    }
 
    /**
     * Function to register given name with the system. Returns user info.
-    * TODO: Remove reading of database twice.
     */
-   public User registerUser(String name)
+   public boolean registerUser(String name)
    {
-      if(!filePerm.getGlobalPermission(name))
-         return null;
+      if(!filePerm.getGlobalPermission(name) || name == null)
+         return false;
       User user = getUser(name);
       if(user != null) // User registered.
-         return user;
+         return false;
 
-      user = new User(name, 1+userCount);
-      User users[] = {user};
-      addDataToFile("userdata.json",users);
-      return user;
+      user = new User(name, 1+entryCount);
+      return addData(name, user);
    }
 
    /**
@@ -84,10 +85,7 @@ public class UserBase extends FileData<User>
    {
       if(!filePerm.getGlobalPermission(name))
          return null;
-      User result = getUserInMemory(name);
-      if(result != null)
-         return result;
-      return getUserInDataBase(name);
+      return getData(name);
    }
 
    /**
@@ -95,14 +93,7 @@ public class UserBase extends FileData<User>
     */
    private boolean addUserToMemory(User usr)
    {
-      if(usr == null)
-         return false;
-
-      if(userMem.size() > MAX_MEM_USERS)
-         userMem.removeLast();
-
-      userMem.addFirst(new MutablePair<String, User>(usr.getName(), usr));
-      return true;
+      return addDataToMemory(usr.getName(), usr);
    }
 
    /**
@@ -125,52 +116,18 @@ public class UserBase extends FileData<User>
       result = new User(idVal, id);
       return result;
    }
-   
+
    public LinkedHashMap<String, String> dataToRawData(User data)
    {
       LinkedHashMap<String, String> result = 
-         new LinkedHashMap<String, String>(2);
+            new LinkedHashMap<String, String>(2);
 
       result.put("name", data.getName());
       result.put("id", String.valueOf(data.getID()));
 
       return result;
    }
-   
-   /**
-    * Helper function to get user from file.
-    */
-   private User getUserInDataBase(String name)
-   {
-      String dataKeys[] = {"id"};
-      User resultUser = getDataInFile("userdata.json", "name", dataKeys);
-      
-      if(resultUser != null)
-         addUserToMemory(resultUser);
 
-      return resultUser;
-   }
-
-   /**
-    * Helper function to get user from runtime memory.
-    * Called from getUser().
-    */
-   private User getUserInMemory(String name)
-   {
-      Iterator<MutablePair<String, User>> it = userMem.iterator();
-      User result = null;
-      MutablePair<String, User> search = null;
-      while(it.hasNext())
-      {
-         search = it.next();
-         if(search.getKey().equalsIgnoreCase(name))
-         {
-            result = (User)search.getRight();
-            break;
-         }
-      }
-      return result;
-   }
 
    /**
     * Reads the user files and updates user count.
@@ -178,18 +135,6 @@ public class UserBase extends FileData<User>
     */
    private void loadUsersIntoMemory()
    {
-      // Put parse json here.
-      JSONArray users = readJson("userdata.json");
-      if(users == null)
-         return ;
-      userCount = users.size();
-      userMem.clear();
-      for(int x = 0; x < users.size() && x < MAX_MEM_USERS; ++x)
-      {
-         JSONObject curUser =  (JSONObject) users.get(x);
-         long id = Long.parseLong(curUser.get("id").toString());
-         String name = curUser.get("name").toString();
-         userMem.add(new MutablePair<String, User>(name, new User(name, id)));
-      }
+      loadDataIntoMemory("name");
    }
 }
