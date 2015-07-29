@@ -24,12 +24,12 @@ public abstract class FileMemory<D> extends FileData<D>
    // Container to store the Users into memory.
    public ArrayDeque<MutablePair<String, D>>dataMem;
 
-   FileMemory()
+   public FileMemory()
    {
       this(2000);
    }
 
-   FileMemory(int maxMemData)
+   public FileMemory(int maxMemData)
    {
       if(maxMemData <= 0)
          MAX_MEM_DATA = 2000;
@@ -53,6 +53,21 @@ public abstract class FileMemory<D> extends FileData<D>
    }
    
    /**
+    * Main function to use in order to modify existing data if exists.
+    */
+   public boolean forceAddData(String key, D data)
+   {
+      if(super.forceAddData(key, data))
+         return false;
+      D memData = getDataInMemory(key);
+      if(memData == null)
+         return addDataToMemory(key, data);
+      memData = data;
+      return true;
+   }
+   
+   
+   /**
     * Main function to call in order to grab user. Automatically checks if
     * user is in memory. If not, fetches data in file.
     */
@@ -66,9 +81,9 @@ public abstract class FileMemory<D> extends FileData<D>
       return result;
    }
    
-   public boolean loadDataIntoMemory(String idKey)
+   public boolean loadDataIntoMemory()
    {
-      return loadDataIntoMemory(defFileName, idKey, defDataKeys);
+      return loadDataIntoMemory(defFileName, defIdKey, defDataKeys);
    }
    
    /**
@@ -96,10 +111,9 @@ public abstract class FileMemory<D> extends FileData<D>
          for(int i = 0; i < dataKeys.length; ++i)
             values[i] = curUser.get(dataKeys[i]).toString();
          
-         MutablePair<String, D> result = new MutablePair<String, D>(
-               curUser.get(idKeyVal).toString(), 
-               rawDataToData(idKeyVal, dataKeys, values)
-               );
+         String key = curUser.get(idKeyVal).toString();
+         MutablePair<String, D> result = new MutablePair<String, D>
+            (key, rawDataToData(key, dataKeys, values));
          dataMem.add(result);
       }
       return true;

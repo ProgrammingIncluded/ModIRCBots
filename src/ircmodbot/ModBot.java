@@ -139,6 +139,14 @@ public class ModBot extends PircBot
    }
 
    /**
+    * Gets the user base for user related processing.
+    */
+   public UserBase getUserBase()
+   {
+      return userBase;
+   }
+   
+   /**
     * Function to first call to set up logging.
     */
    public static boolean configure(String logPropFile)

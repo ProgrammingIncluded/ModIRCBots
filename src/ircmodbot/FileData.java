@@ -17,7 +17,8 @@ import org.json.simple.parser.ParseException;
 /**
  * Simple extension of FileSystem that supports Json reading for more complex
  * datastructures. Reads directly from files. Use FileMemory for optional
- * load to memory.
+ * load to memory. TODO: REFACTOR TO MAKE PROPER BYTE DEPENDENT FILE SYSTEM 
+ * ALLOW RELEASE AND ACQUIRE OF ASSET IN SYSTEM
  */
 public abstract class FileData<D> extends FileSystem
 {
@@ -39,6 +40,7 @@ public abstract class FileData<D> extends FileSystem
 
    /**
     * Simple function to call in order to add new data in to system.
+    * TODO: Remove read twice in getDataInFile and addDataToFile
     */
    public boolean addData(String key, D data)
    {
@@ -52,6 +54,18 @@ public abstract class FileData<D> extends FileSystem
       return true;
    }
 
+   /**
+    * Function to overwrite data in file.
+    */
+   public boolean forceAddData(String key, D data)
+   {
+      if(data == null)
+         return false;
+
+      addDataToFile(data);
+      return true;
+   }
+   
    /**
     * Simple general function to call in order to get data.
     */
@@ -127,7 +141,7 @@ public abstract class FileData<D> extends FileSystem
 
    /**
     * Function to add data to json file. Data given is in array format
-    * as it is more beneficial. 
+    * as it is more beneficial.  RE-Write to incorporate manual release of read.
     */
    @SuppressWarnings("unchecked")
    protected void addDataToFile(String fileName,D data[])
@@ -156,7 +170,7 @@ public abstract class FileData<D> extends FileSystem
          appendJsonArray(finalArray, userJSON);
 
       JSONObject container = new JSONObject();
-      container.put("users", finalArray);
+      container.put(getContainerName(), finalArray);
       try
       {
          File file = this.getFilePath(fileName);

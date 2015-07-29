@@ -135,6 +135,6 @@ public class UserBase extends FileMemory<User>
     */
    private void loadUsersIntoMemory()
    {
-      loadDataIntoMemory("name");
+      loadDataIntoMemory();
    }
 }
