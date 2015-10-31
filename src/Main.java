@@ -11,15 +11,9 @@ public class Main {
 
       // Now start our bot up.
       ModBot.configure("system/log4j.properties");
-      ModBot bot = new ModBot("SKKBot");
+      ModBot bot = new ModBot();
       // Enable debugging output.
       bot.setVerbose(true);
-      // Connect to the IRC server.
-      bot.connect("irc.rizon.net");
-      // Join the #pircbot channel.
-      bot.joinChannel("#skktest");
-      bot.addChannelName("#skktest");
-
       // Add modules to bot
       bot.addModule(new ESMod());
       bot.addModule(new InfoMod());

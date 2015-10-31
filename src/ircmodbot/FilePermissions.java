@@ -173,31 +173,20 @@ public class FilePermissions extends FileSystem
    {
       return parseList(blackListFile);
    }
-   
    /**
     * Helper function to parse lists.
     */
    private ArrayList<String> parseList(File file)
    {
-      ArrayList<String> result = new ArrayList<String>();
-      if(file == null || file.exists() == false)
-         return result;
-      
-      BufferedReader bufferReader = null;
+	   ArrayList<String> result = null;
       try
       {
-         bufferReader = new BufferedReader(
-            new FileReader(file.getAbsolutePath()));
-         String line = "";
-         while((line = bufferReader.readLine())!=null)
-         {
-            result.add(line);
-         }
-         bufferReader.close();
+         result = BasicFileOp.parseFileLBL(file);
       }
-      catch(IOException e)
+      catch(PartialLBLException e)
       {
          LOGGER.error("Unable to read permissions file.", e);
+         result = e.result;
          return result;
       }
       return result;

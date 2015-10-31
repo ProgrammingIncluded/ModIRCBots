@@ -1,0 +1,3 @@
+irc.rizon.net
+#skktest
+SKKBot
