@@ -8,21 +8,29 @@ import org.apache.commons.lang3.tuple.MutablePair;
 public class Conversion
 {
    // Rate to with respective to bank currency.
-   // rate = curr/federal
+   // rate = curr/default 
    public ArrayList<MutablePair<String, Long>> rates;
    
+   // Constructor to set default currency name.
    Conversion(String defCur)
    {
       rates = new ArrayList<MutablePair<String, Long>>();
       rates.add(new MutablePair<String, Long>(defCur, new Long(1)));
+      // Other currency test rate. 
+      rates.add(new MutablePair<String, Long>("SHELL", new Long(5)));
    }
    
    /**
     * Throws CurrencyTypeException if format is invalid.
+    * Checks if fromType is equal to toType, if it is, returns original
+    * value. Case insensitive.
     */
    public long convertCurrency(long value, String fromType, String toType)
      throws CurrencyTypeException
    {
+	  if(fromType.equalsIgnoreCase(toType))
+		  return value;
+	  
       Iterator<MutablePair<String, Long>> it = rates.iterator();
       boolean fromCheck = false;
       boolean toCheck = false;

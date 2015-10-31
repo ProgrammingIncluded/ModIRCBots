@@ -23,6 +23,7 @@ public class Main {
       bot.addModule(new TQuoteMod(qm));
       bot.addModule(new BankMod(bot));
       bot.addModule(new ZoraelMod());
+
       /*
       FileManagerMod fm = new FileManagerMod();
       bot.addModule(fm);
