@@ -9,15 +9,16 @@ public class Conversion
 {
    // Rate to with respective to bank currency.
    // rate = curr/default 
-   public ArrayList<MutablePair<String, Long>> rates;
+   public ArrayList<MutablePair<String, Double>> rates;
    
    // Constructor to set default currency name.
    Conversion(String defCur)
    {
-      rates = new ArrayList<MutablePair<String, Long>>();
-      rates.add(new MutablePair<String, Long>(defCur, new Long(1)));
+      rates = new ArrayList<MutablePair<String, Double>>();
+      rates.add(new MutablePair<String, Double>(defCur, new Double(1)));
       // Other currency test rate. 
-      rates.add(new MutablePair<String, Long>("SHELL", new Long(5)));
+      rates.add(new MutablePair<String, Double>("SHELL", new Double(2)));
+      rates.add(new MutablePair<String, Double>("SUSA", new Double(5)));
    }
    
    /**
@@ -25,21 +26,21 @@ public class Conversion
     * Checks if fromType is equal to toType, if it is, returns original
     * value. Case insensitive.
     */
-   public long convertCurrency(long value, String fromType, String toType)
+   public double convertCurrency(double amt, String fromType, String toType)
      throws CurrencyTypeException
    {
 	  if(fromType.equalsIgnoreCase(toType))
-		  return value;
+		  return amt;
 	  
-      Iterator<MutablePair<String, Long>> it = rates.iterator();
+      Iterator<MutablePair<String, Double>> it = rates.iterator();
       boolean fromCheck = false;
       boolean toCheck = false;
-      long fromTypeRate, toTypeRate;
-      fromTypeRate = 0;
-      toTypeRate = 0;
+      Double fromTypeRate, toTypeRate;
+      fromTypeRate = 0.0;
+      toTypeRate = 0.0;
       while(it.hasNext())
       {
-         MutablePair<String, Long> result = it.next();
+         MutablePair<String, Double> result = it.next();
          if(result.left.equalsIgnoreCase(fromType))
          {
             fromCheck = true;
@@ -63,7 +64,7 @@ public class Conversion
          return 0;
       
       // Convert to federal currency.
-      return (1/fromTypeRate) * value * toTypeRate;
+      return (1/fromTypeRate) * amt * toTypeRate;
    }
    
    /**
@@ -71,7 +72,7 @@ public class Conversion
     */
    public boolean currencyExists(String type)
    {
-      Iterator<MutablePair<String, Long>> it = rates.iterator();
+      Iterator<MutablePair<String, Double>> it = rates.iterator();
       while(it.hasNext())
       {
          if(it.next().left.equalsIgnoreCase(type))

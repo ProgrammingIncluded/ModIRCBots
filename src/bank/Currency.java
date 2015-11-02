@@ -7,9 +7,9 @@ package bank;
  */
 public class Currency {
 	String type;
-	Long amt;
+	Double amt;
 	
-	public Currency(Long amount, String currType)
+	public Currency(Double amount, String currType)
 	{
 		amt = amount;
 		type = currType;

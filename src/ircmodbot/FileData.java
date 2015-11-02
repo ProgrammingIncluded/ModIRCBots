@@ -59,7 +59,6 @@ public abstract class FileData<D> extends FileSystem
 	
 	/**
 	 * Simple function to call in order to add new data in to system.
-	 * TODO: Remove read twice in getDataInFile and addDataToFile
 	 */
 	public boolean addData(String key, D data[])
 	{
@@ -165,7 +164,6 @@ public abstract class FileData<D> extends FileSystem
 			{
 				JSONObject dataObject = (JSONObject)fileArray.get(index);
 				dataObject.put(names.get(x).toString(),values.get(x).toString());
-				System.out.println(dataObject);
 			}
 		}
 		JSONObject container = new JSONObject();

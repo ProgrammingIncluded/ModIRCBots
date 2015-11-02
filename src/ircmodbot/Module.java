@@ -10,26 +10,29 @@ public abstract class Module
 
    protected Module()
    {
-      this(null, null);
+      this(null, null, null);
    }
 
    protected Module(String triggerWord)
    {
-      this(null, triggerWord);
+      this(null, null, triggerWord);
+   }
+   
+   protected Module(String moduleName, String triggerWord)
+   {
+	   this(null, moduleName, triggerWord);
    }
    
    protected Module(ModBot bot, String moduleName, String triggerWord)
    {
       if(!setBot(bot))
-      {
          bot = null;
-      }
 
       if(!setTrigger(triggerWord))
-      {
-         triggerWord = "ERR" + Math.random() * 10;
-      }
-      moduleName = "Unknownmod" + Math.random();
+         triggerWord = "ERR" + String.valueOf(Math.random()*10);
+      
+      if(!setName(moduleName))
+    	  moduleName = "Unknownmod" + String.valueOf(Math.random());
    }
 
    protected Module(ModBot bot, String triggerWord)
@@ -65,6 +68,15 @@ public abstract class Module
 
       trigger = triggerWord;
       return true;
+   }
+   
+   public boolean setName(String name)
+   {
+	   if(name == null)
+		   return false;
+	   
+	   moduleName = name;
+	   return true;
    }
 
    public String getTrigger()

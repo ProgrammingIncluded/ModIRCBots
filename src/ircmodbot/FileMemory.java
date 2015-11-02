@@ -1,6 +1,5 @@
 package ircmodbot;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -21,9 +20,10 @@ public abstract class FileMemory<D> extends FileData<D>
 {
    // Max amount of data allowed to store in class. 
    public final int MAX_MEM_DATA;
+   private int internalSize = 0;
 
    // Container to store the Users into memory.
-   public ArrayDeque<MutablePair<String, D>>dataMem;
+   public ArrayList<MutablePair<String, D>>dataMem;
 
    public FileMemory()
    {
@@ -36,13 +36,13 @@ public abstract class FileMemory<D> extends FileData<D>
          MAX_MEM_DATA = 2000;
       else
          MAX_MEM_DATA = maxMemData;
-      dataMem = new ArrayDeque<MutablePair<String, D>>(MAX_MEM_DATA);
+      dataMem = new ArrayList<MutablePair<String, D>>(MAX_MEM_DATA);
    }
    
    /**
     * Overloaded addData function in order to add new Data to memory after
     * adding to file. Writes directly in to memory and file. Does not 
-    * do memory first.
+    * do memory first. Will not overwrite old data.
     */
    public boolean addData(String key, D data)
    {
@@ -55,18 +55,43 @@ public abstract class FileMemory<D> extends FileData<D>
    
    /**
     * Main function to use in order to modify existing data if exists.
+    * Updates data if exists, else adds data.
     */
    public boolean forceAddData(String key, D data)
    {
       if(!super.forceAddData(key, data))
          return false;
-      D memData = getDataInMemory(key);
-      if(memData == null)
+      boolean result = updateDataInMemory(key, data);
+      if(!result)
          return addDataToMemory(key, data);
-      memData = data;
+      
       return true;
    }
    
+   /**
+    * Main function to use to update value in memory
+    * and automatic update in file.
+    */
+   public boolean updateData(String idKeyValue, D data)
+   {
+	   if(!super.updateData(idKeyValue, data))
+		   return false;
+	   return updateDataInMemory(idKeyValue, data);
+   }
+   
+   /**
+    * Function that will only add the data to value if and only if
+    * it exists. If not, returns false.
+    */
+   private boolean updateDataInMemory(String idKeyValue, D data)
+   {
+	   int index = indexOfData(idKeyValue);
+	   if(index == -1)
+		   return false;
+
+	   dataMem.get(index).setValue(data);
+	   return true;
+   }
    
    /**
     * Main function to call in order to grab user. Automatically checks if
@@ -119,22 +144,20 @@ public abstract class FileMemory<D> extends FileData<D>
       }
       return true;
    }
-
+   
    /**
-    * Grabs the given data from memory. 
-    * Primarily a helper function called from getData()
+    * Linear search to find if data is in memory.
+    * If not, returns -1.
     */
-   protected D getDataInMemory(String keyName)
+   private int indexOfData(String keyName)
    {
-      Iterator<MutablePair<String,D>> it = dataMem.iterator();
-      D result = null;
-      MutablePair<String, D> search = null;
-      while(it.hasNext())
+	  int result = -1;
+
+      for(int x = 0; x < dataMem.size(); ++x)
       {
-         search = it.next();
-         if(search.getKey().equals(keyName))
+         if(dataMem.get(x).getKey().equals(keyName))
          {
-            result = (D)search.getRight();
+            result = x;
             break;
          }
       }
@@ -142,17 +165,39 @@ public abstract class FileMemory<D> extends FileData<D>
    }
 
    /**
-    * Adds given user to runtime memory.
+    * Grabs the given data from memory. 
+    * Primarily a helper function called from getData()
+    */
+   protected D getDataInMemory(String keyName)
+   {
+	  int index = indexOfData(keyName);
+	  if(index >= dataMem.size() || index < 0)
+		  return null;
+      return dataMem.get(indexOfData(keyName)).getValue();
+   }
+
+   /**
+    * Adds given user to runtime memory. Just adds memory, does not care about
+    * repeats in memory.
     */
    protected boolean addDataToMemory(String key, D data)
    {
       if(data == null)
          return false;
 
+      if(internalSize >= MAX_MEM_DATA)
+         internalSize = 0;
+      
       if(dataMem.size() >= MAX_MEM_DATA)
-         dataMem.removeLast();
-
-      dataMem.addFirst(new MutablePair<String, D>(key, data));
+      {
+    	  dataMem.set(internalSize, new MutablePair<String, D>(key, data));
+    	  ++internalSize;
+      }
+      else
+      {
+    	  dataMem.add( new MutablePair<String, D>(key, data));
+    	  ++internalSize;
+      }
       return true;
    }
    

@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 
 import bank.Bank;
 import bank.TransactionException;
-import ircmodbot.FileSystem;
 import ircmodbot.ModBot;
 import ircmodbot.Module;
 import ircmodbot.OpHelp;
@@ -18,17 +17,13 @@ public class BankMod extends Module
 	{
 		super(bot, "BankMod", "BKM");
 		bank = new Bank(bot.getUserBase());
-		// Test Code
-		try
-		{
-			bank.transact("SKK", "Botato", 10, "SKKC");
-		}
-		catch(TransactionException e)
-		{
-			LOGGER.debug(e);
-		}
 	}
 
+	public Bank getBank()
+	{
+		return bank;
+	}
+	
 	@Override
 	public void onMessage(String channel, String sender, String login,
 			String hostname, String message)

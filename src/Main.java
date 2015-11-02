@@ -1,6 +1,7 @@
 import ircmodbot.*;
 import modules.BankMod;
 import modules.ESMod;
+import modules.FishMod;
 import modules.InfoMod;
 import modules.QuoteMod;
 import modules.TQuoteMod;
@@ -21,9 +22,12 @@ public class Main {
       QuoteMod qm = new QuoteMod();
       bot.addModule(qm);
       bot.addModule(new TQuoteMod(qm));
-      bot.addModule(new BankMod(bot));
+      
+      BankMod bm = new BankMod(bot);
+      bot.addModule(bm);
       bot.addModule(new ZoraelMod());
-
+      bot.addModule(new FishMod(bm));
+      
       /*
       FileManagerMod fm = new FileManagerMod();
       bot.addModule(fm);

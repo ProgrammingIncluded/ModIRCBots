@@ -11,13 +11,13 @@ public class Transaction
    private String currencyType;
    private String from;
    private String to;
-   private long amt;
+   private double amt;
    Transaction()
    {
       
    }
    
-   Transaction(String currencyType, String from, String to, long amt)
+   Transaction(String currencyType, String from, String to, double amt)
    {
       
    }
@@ -70,7 +70,7 @@ public class Transaction
       return true;
    }
    
-   public long getAmount()
+   public double getAmount()
    {
       return amt;
    }

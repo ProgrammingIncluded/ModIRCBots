@@ -26,6 +26,8 @@ public class Bank extends FileMemory<Account>
 	private Conversion converter;
 	/// Default currency used by bank.
 	private String defCurrency = "SKKC";
+	/// String used to identify various banks.
+	private String bankName = "SKKBank";
 
 	/**
 	 * Default constructor for bank. 
@@ -73,7 +75,7 @@ public class Bank extends FileMemory<Account>
 		Account account = this.getData(String.valueOf(user.getID()));
 
 		if(account == null)
-			return new Currency(0L, defCurrency);
+			return new Currency(0.0, defCurrency);
 
 		Currency result = null;
 		try
@@ -89,11 +91,13 @@ public class Bank extends FileMemory<Account>
 	}
 
 	/**
-	 * Call function to transact a user's currency to another.
+	 * Call function to transact a user's currency to another. Returns false if user is same.
 	 */
-	public boolean transact(String fromUserName, String toUserName, long value,
+	public boolean transact(String fromUserName, String toUserName, Double value,
 			String type) throws TransactionException
 	{
+		if(fromUserName.equalsIgnoreCase(toUserName))
+			return false;
 		// Get users.
 		User fromUser = userBase.getUser(fromUserName);
 		User toUser = userBase.getUser(toUserName);
@@ -105,12 +109,11 @@ public class Bank extends FileMemory<Account>
 			throw new TransactionException("User does not exist: " + toUser);
 		
 		// Convert the currency to default value for transaction.
-		long convertValue = 1;
 		if(!type.equalsIgnoreCase(this.defCurrency))
 		{
 			try
 			{
-				convertValue = converter.convertCurrency(value, type, defCurrency);
+				value = converter.convertCurrency(value, type, defCurrency);
 			}
 			catch(CurrencyTypeException e)
 			{
@@ -128,14 +131,20 @@ public class Bank extends FileMemory<Account>
 		if (toAcc == null)
 			toAcc = registerAccount(toUser.getID());
 		
-		Long fromAmt = fromAcc.amt;
-		Long toAmt = toAcc.amt;
+		Double fromAmt = fromAcc.amt;
+		Double toAmt = toAcc.amt;
 
 		if(fromAmt < value)
 			throw new TransactionException("Not enough money: " + fromUserName);
-
-		this.forceAddData(String.valueOf(fromUser.getID()), new Account(fromUser.getID(), fromAmt - value));
-		this.forceAddData(String.valueOf(toUser.getID()), new Account(toUser.getID(), toAmt + value));
+		
+		Account fromFAccount = new Account(fromUser.getID(), fromAmt - value);
+		Account toFAccount = new Account(toUser.getID(), toAmt + value);
+		
+		Account.roundAmt(fromFAccount);
+		Account.roundAmt(toFAccount);
+		
+		this.forceAddData(String.valueOf(fromUser.getID()), fromFAccount);
+		this.forceAddData(String.valueOf(toUser.getID()), toFAccount);
 		return true;
 	}
 
@@ -149,7 +158,7 @@ public class Bank extends FileMemory<Account>
 	 * Creates account with given unique ID and sets value to zero.
 	 * ID must not be used before or returns false.
 	 */
-	public Account registerAccount(long id)
+	public Account registerAccount(Long id)
 	{
 		Account result = new Account(id, 0);
 		if(this.addData(String.valueOf(id), result) == false)
@@ -174,9 +183,22 @@ public class Bank extends FileMemory<Account>
 		return true;
 	}
 
+	public boolean setBankName(String name)
+	{
+		if(name == null)
+			return false;
+		bankName = name;
+		return true;
+	}
+	
 	public String getDefCurrency()
 	{
 		return defCurrency;
+	}
+	
+	public String getBankName()
+	{
+		return bankName;
 	}
 
 	public Account rawDataToData(String idVal, String[] key, String[] data)
@@ -184,7 +206,7 @@ public class Bank extends FileMemory<Account>
 		if(data == null || data.length == 0)
 			return new Account();
 
-		return new Account(Long.valueOf(idVal), Long.valueOf(data[0]));
+		return new Account(Long.valueOf(idVal), Double.valueOf(data[0]));
 	}
 
 	public  Pair<ArrayList<String>, ArrayList<String>> dataToRawData(Account data)
