@@ -6,8 +6,8 @@ public class Account
    long amt;
    Account()
    {
-      id = 0;
-      amt = 0;
+      id = 0L;
+      amt = 0L;
    }
    
    Account(long id, long amt)

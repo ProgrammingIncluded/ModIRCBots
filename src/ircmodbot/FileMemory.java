@@ -1,10 +1,11 @@
 package ircmodbot;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 
 import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -47,7 +48,7 @@ public abstract class FileMemory<D> extends FileData<D>
    {
       // Perhaps one can implement write to memory and then
       // flush to harddrive?
-      if(super.addData(key, data) == false)
+      if(!super.addData(key, data))
          return false;
       return addDataToMemory(key, data);
    }
@@ -57,7 +58,7 @@ public abstract class FileMemory<D> extends FileData<D>
     */
    public boolean forceAddData(String key, D data)
    {
-      if(super.forceAddData(key, data))
+      if(!super.forceAddData(key, data))
          return false;
       D memData = getDataInMemory(key);
       if(memData == null)
@@ -71,19 +72,19 @@ public abstract class FileMemory<D> extends FileData<D>
     * Main function to call in order to grab user. Automatically checks if
     * user is in memory. If not, fetches data in file.
     */
-   public D getData(String idKey)
+   public D getData(String idKeyValue)
    {
-      D result = getDataInMemory(idKey);
+      D result = getDataInMemory(idKeyValue);
       if(result != null)
          return result;
-      result = getDataInFile(idKey);
-      addDataToMemory(idKey, result); // Already checks if result is null.
+      result = super.getData(idKeyValue);
+      addDataToMemory(idKeyValue, result); // Already checks if result is null.
       return result;
    }
    
    public boolean loadDataIntoMemory()
    {
-      return loadDataIntoMemory(defFileName, defIdKey, defDataKeys);
+      return loadDataIntoMemory(fileName, idKey, dataKeys);
    }
    
    /**
@@ -98,7 +99,7 @@ public abstract class FileMemory<D> extends FileData<D>
          return false;
 
       // Put parse json here.
-      JSONArray users = readJson(fileName);
+      JSONArray users = readJsonFile(fileName);
       if(users == null)
          return false;
       dataMem.clear();
@@ -155,7 +156,8 @@ public abstract class FileMemory<D> extends FileData<D>
       return true;
    }
    
+   // See overriden function.
    public abstract D rawDataToData(String idVal, String[] key, String[] data);
-   public abstract LinkedHashMap<String, String> dataToRawData(D data);
+   public abstract Pair<ArrayList<String>, ArrayList<String>> dataToRawData(D data);
    
 }

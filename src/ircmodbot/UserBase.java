@@ -5,10 +5,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -117,14 +120,17 @@ public class UserBase extends FileMemory<User>
       return result;
    }
 
-   public LinkedHashMap<String, String> dataToRawData(User data)
+   public Pair<ArrayList<String>, ArrayList<String>> dataToRawData(User data)
    {
-      LinkedHashMap<String, String> result = 
-            new LinkedHashMap<String, String>(2);
+	  ArrayList<String> names = new ArrayList<String>();
+	  ArrayList<String> values = new ArrayList<String>();
 
-      result.put("name", data.getName());
-      result.put("id", String.valueOf(data.getID()));
-
+	  names.add("name"); values.add(data.getName());
+	  names.add("id"); values.add(String.valueOf(data.getID()));
+	  
+      Pair<ArrayList<String>, ArrayList<String>> result = 
+    		  new ImmutablePair<ArrayList<String>, ArrayList<String>>(names, values);
+      
       return result;
    }
 

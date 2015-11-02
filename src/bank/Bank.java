@@ -1,7 +1,10 @@
 package bank;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 
 import ircmodbot.FileMemory;
@@ -122,7 +125,7 @@ public class Bank extends FileMemory<Account>
 		// Register new account if not exist.
 		if(fromAcc == null)
 			fromAcc = registerAccount(fromUser.getID());
-		else if (toAcc == null)
+		if (toAcc == null)
 			toAcc = registerAccount(toUser.getID());
 		
 		Long fromAmt = fromAcc.amt;
@@ -131,8 +134,8 @@ public class Bank extends FileMemory<Account>
 		if(fromAmt < value)
 			throw new TransactionException("Not enough money: " + fromUserName);
 
-		this.forceAddData(fromUserName, new Account(fromUser.getID(), fromAmt - value));
-		this.forceAddData(toUserName, new Account(toUser.getID(), toAmt + value));
+		this.forceAddData(String.valueOf(fromUser.getID()), new Account(fromUser.getID(), fromAmt - value));
+		this.forceAddData(String.valueOf(toUser.getID()), new Account(toUser.getID(), toAmt + value));
 		return true;
 	}
 
@@ -184,11 +187,17 @@ public class Bank extends FileMemory<Account>
 		return new Account(Long.valueOf(idVal), Long.valueOf(data[0]));
 	}
 
-	public LinkedHashMap<String, String> dataToRawData(Account data)
+	public  Pair<ArrayList<String>, ArrayList<String>> dataToRawData(Account data)
 	{
-		LinkedHashMap<String, String> result = new LinkedHashMap<String,String>();
-		result.put(this.getDefIdKey(), String.valueOf(data.id));
-		result.put(this.getDefDataKeys()[0], String.valueOf(data.amt));
+		ArrayList<String> names = new ArrayList<String>();
+		ArrayList<String> values = new ArrayList<String>();
+		
+		names.add(this.getDefIdKey()); values.add(String.valueOf(data.id));
+		names.add(this.getDefDataKeys()[0]); values.add(String.valueOf(data.amt));
+		
+		Pair<ArrayList<String>, ArrayList<String>> result = 
+				new ImmutablePair<ArrayList<String>, ArrayList<String>>(names, values);
+		
 		return result;
 	}
 }
