@@ -12,7 +12,9 @@ import org.jibble.pircbot.*;
  * Generic bot class to create a mod bot.
  * Add modules to the bot for different abilities. Right now, can be
  * optimized by adding a list for quicker command find. Also, commands
- * have to be unique. Commands can also not be chained.
+ * have to be unique. Commands can not be chained.
+ * 
+ * Each message function passes an array of the parsed commands.
  * 
  * Configure must be first called to use class.
  * @author Charles
@@ -47,17 +49,15 @@ public class ModBot extends PircBot
 		if(!sender.equalsIgnoreCase(getName()))
 			userBase.registerUser(sender);
 
+		ArrayList<String> cmd =  parseCommand(message);
 		// Perhaps use list instead in order to search faster?
 		while(it.hasNext())
 		{
 			currentModule = it.next();
 			trigger = currentModule.getTrigger();
-			String modMessage = OpHelp.command(message, trigger);
-			if(modMessage.length() != 0)
+			if(trigger.length() == 0 ||trigger.equalsIgnoreCase(cmd.get(0)))
 			{
-				// No duplicate messages!
-				message = modMessage;
-				currentModule.onMessage(channel, sender, login, hostname, message);
+				currentModule.onMessage(channel, sender, login, hostname, message, cmd);
 			}
 		}
 	}
@@ -68,6 +68,7 @@ public class ModBot extends PircBot
 		Iterator<Module> it = modules.iterator();
 		if(!sender.equalsIgnoreCase(getName()))
 			userBase.registerUser(sender);
+
 		while(it.hasNext())
 		{
 			// Send directly to all modules if needed. Perhaps do a check
@@ -83,17 +84,15 @@ public class ModBot extends PircBot
 		Module currentModule;
 		String trigger;
 
+		ArrayList<String> cmd =  parseCommand(message);
 		// Perhaps use list instead in order to search faster?
 		while(it.hasNext())
 		{
 			currentModule = it.next();
 			trigger = currentModule.getTrigger();
-			String modMessage = OpHelp.command(message, trigger);
-			if(modMessage.length() != 0)
+			if(trigger.length() == 0 || trigger.equalsIgnoreCase(cmd.get(0)))
 			{
-				// No duplicate messages!
-				message = modMessage;
-				currentModule.onPrivateMessage(sender, login, hostname, message);
+				currentModule.onPrivateMessage(sender, login, hostname, message, cmd);
 			}
 		}
 	}
@@ -103,6 +102,38 @@ public class ModBot extends PircBot
 	public void addChannelName(String channel)
 	{
 		this.channel = channel;
+	}
+	
+	public ArrayList<String> parseCommand(String msg)
+	{
+		ArrayList<String> cmd = new ArrayList<String>();
+		
+		if(msg == null)
+			return cmd;
+
+		while(true)
+		{
+			int index = msg.indexOf(' ');
+			if(index != -1)
+				cmd.add(msg.substring(0, index));
+			else 
+				break;
+			
+			if(index + 1 < msg.length())
+			{
+				msg = msg.substring(index + 1, msg.length());
+			}
+			else
+			{
+				msg = "";
+				break;
+			}
+		}
+		
+		if(msg.length() != 0)
+			cmd.add(msg);
+		
+		return cmd;
 	}
 
 	/**
@@ -132,7 +163,7 @@ public class ModBot extends PircBot
 	{
 		return channel;
 	}
-
+	
 	/**
 	 * Gets the user base for user related processing.
 	 */

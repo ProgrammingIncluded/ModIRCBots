@@ -1,5 +1,7 @@
 package modules;
 
+import java.util.ArrayList;
+
 import bank.TransactionException;
 import ircmodbot.Module;
 
@@ -20,7 +22,7 @@ public class FishMod extends Module
 
 	@Override
 	public void onMessage(String channel, String sender, String login,
-			String hostname, String message)
+			String hostname, String message, ArrayList<String> cmd)
 	{
 		if(!sender.equalsIgnoreCase(fisherName))
 			return;
@@ -36,7 +38,7 @@ public class FishMod extends Module
 
 	@Override
 	public void onPrivateMessage(String sender, String login, String hostname,
-			String message)
+			String message, ArrayList<String> cmd)
 	{
 		if(!sender.equalsIgnoreCase(fisherName))
 			return;

@@ -2,6 +2,7 @@ package modules;
 import ircmodbot.Module;
 import ircmodbot.OpHelp;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -24,15 +25,27 @@ public class QuoteMod extends Module
    }
 
    public void onMessage(String channel, String sender,
-      String login, String hostname, String message)
+      String login, String hostname, String message, ArrayList<String> cmd)
    {
-      displayQuote(channel,message);
+	  if(cmd.size() < 3 )
+	  {
+		  bot.sendMessage(sender, "Invalid formatting");
+		  return;
+	  }
+	  message = OpHelp.subString(message, 3 + sender.length() + 1, message.length());
+      displayQuote(sender,message,channel);
    }
 
    public void onPrivateMessage(String sender, String login, 
-      String hostname, String message)
+      String hostname, String message, ArrayList<String> cmd)
    {
-      displayQuote(bot.getChannelName(),message);
+	  if(cmd.size() < 3 )
+	  {
+		  bot.sendMessage(sender, "Invalid formatting");
+		  return;
+	  }
+	  message = OpHelp.subString(message, 3 + sender.length() + 1, message.length());
+	  displayQuote(sender, message, bot.getChannelName());
    }
 
    public void onJoin(String channel,String sender, 
@@ -41,32 +54,20 @@ public class QuoteMod extends Module
       return ;
    }
 
-   public void noticeQuote(String sender, String message)
+   public void noticeQuote(String sender, String message,String sendTo)
    {
       int year = Calendar.getInstance().get(Calendar.YEAR);
-      String name = message.substring(0, message.indexOf(' '));
-      message = OpHelp.command(message, name);
-      bot.sendNotice(sender, Colors.BOLD + randColor()
+      bot.sendNotice(sendTo, Colors.BOLD + randColor()
          + "\"" + message +  "\"" + Colors.NORMAL + " - "
-         + name + ", " + year);
+         + sender + ", " + year);
    }
    
-   public void displayQuote(String channel,String message)
+   public void displayQuote(String sender,String message, String sendTo)
    {
-      int year = Calendar.getInstance().get(Calendar.YEAR);
-      String name = null;
-      try
-      {
-         name = message.substring(0, message.indexOf(' '));
-      }
-      catch(StringIndexOutOfBoundsException e)
-      {
-         return; // No need to log...
-      }
-      message = OpHelp.command(message, name);
-      bot.sendMessage(channel, Colors.BOLD + randColor()
-         + "\"" + message +  "\"" + Colors.NORMAL + " - "
-         + name + ", " + year);
+	      int year = Calendar.getInstance().get(Calendar.YEAR);
+	      bot.sendMessage(sendTo, Colors.BOLD + randColor()
+	         + "\"" + message +  "\"" + Colors.NORMAL + " - "
+	         + sender + ", " + year);
    }
 
    public String randColor()

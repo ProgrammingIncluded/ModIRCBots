@@ -36,12 +36,15 @@ public class TQuoteMod extends Module
    }
 
    public void onMessage(String channel, String sender,
-      String login, String hostname, String message)
+      String login, String hostname, String message, ArrayList<String> cmd)
    {
-      String username = OpHelp.command(message, TARGET_PHRASE);
-      if(username.length() != 0)
+	  
+      if(cmd.get(0).equalsIgnoreCase(TARGET_PHRASE))
       {
-         if(target(username))
+    	 if(cmd.size() < 2)
+    		 return;
+    	 String username = cmd.get(1);
+    	 if(target(username, channel))
          {
             bot.sendNotice(sender,username + " has now been targeted.");
          }
@@ -54,7 +57,7 @@ public class TQuoteMod extends Module
          {
             chances.add(index, chances.get(index) - 1);
             String newMessage = sender + " " + message;
-            qm.noticeQuote(sender, newMessage);
+            qm.displayQuote(sender, newMessage, channel);
             if(chances.get(index) <= 0)
             {
                bot.sendNotice(sender,user.get(index)+" has been lost "
@@ -67,7 +70,7 @@ public class TQuoteMod extends Module
    }
 
    public void onPrivateMessage(String sender, String login, 
-      String hostname, String message)
+      String hostname, String message, ArrayList<String> cmd)
    {
       return ;
    }
@@ -78,21 +81,21 @@ public class TQuoteMod extends Module
       return ;
    }
 
-   public boolean target(String name)
+   public boolean target(String name, String channel)
    {
       if(user.indexOf(name) != -1)
       {
-         bot.sendMessage(bot.getChannelName(), "Cannot target a player that "
+         bot.sendMessage(channel, "Cannot target a player that "
                + "is already targeted. ");
          return false;
       }
       else if(name.equals(bot.getNick()))
       {
-         bot.sendMessage(bot.getChannelName(), "No.");
+         bot.sendMessage(channel, "No.");
          return false;
       }
 
-      User[] names = bot.getUsers(bot.getChannelName());
+      User[] names = bot.getUsers(channel);
       for(int x = 0; x < names.length; ++x)
       {
          if(names[x].getNick().equals(name))

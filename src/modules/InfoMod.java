@@ -22,7 +22,7 @@ public class InfoMod extends Module
    }
 
    public void onMessage(String channel, String sender,
-      String login, String hostname, String message)
+      String login, String hostname, String message, ArrayList<String> cmd)
    {
       if(OpHelp.command(message, "truepurpose").length() != 0)
       {
@@ -42,9 +42,9 @@ public class InfoMod extends Module
    }
 
    public void onPrivateMessage(String sender, String login, 
-      String hostname, String message)
+      String hostname, String message, ArrayList<String> cmd)
    {
-      onMessage(sender, sender, login, hostname, message);
+      onMessage(sender, sender, login, hostname, message, null);
    }
 
    public void onJoin(String channel,String sender, 

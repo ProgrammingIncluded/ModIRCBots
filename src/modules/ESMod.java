@@ -1,4 +1,6 @@
 package modules;
+import java.util.ArrayList;
+
 import ircmodbot.Module;
 import ircmodbot.OpHelp;
 
@@ -33,7 +35,7 @@ public class ESMod extends Module
    }
 
    public void onMessage(String channel, String sender,
-      String login, String hostname, String message)
+      String login, String hostname, String message, ArrayList<String> cmd)
    {
       if(OpHelp.command(message,"exit").length() != 0)
       {
@@ -47,7 +49,7 @@ public class ESMod extends Module
    }
 
    public void onPrivateMessage(String sender, String login, 
-      String hostname, String message)
+      String hostname, String message, ArrayList<String> cmd)
    {
       message = OpHelp.command(message, "pregen");
       if(message.length() != 0)

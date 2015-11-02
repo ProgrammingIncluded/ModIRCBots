@@ -1,5 +1,8 @@
 package modules;
+import java.util.ArrayList;
+
 import ircmodbot.Module;
+import ircmodbot.OpHelp;
 
 
 /**
@@ -14,9 +17,9 @@ public class PGMod extends Module
    }
 
    public void onMessage(String channel, String sender,
-      String login, String hostname, String message)
+      String login, String hostname, String message, ArrayList<String> cmd)
    {
-      bot.sendMessage(channel, "Echo: " + message);
+      bot.sendMessage(channel, "Echo: " + OpHelp.command(this.getTrigger(), message));
    }
 
    public void onJoin(String channel,String sender, 
@@ -26,7 +29,7 @@ public class PGMod extends Module
    }
 
    public void onPrivateMessage(String sender, String login, 
-      String hostname, String message)
+      String hostname, String message, ArrayList<String> cmd)
    {
       
    }

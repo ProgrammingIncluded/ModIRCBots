@@ -1,6 +1,7 @@
 package modules;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -26,13 +27,13 @@ public class ZoraelMod extends Module
    }
 
    public void onMessage(String channel, String sender,
-      String login, String hostname, String message)
+      String login, String hostname, String message, ArrayList<String> cmd)
    {
       int linkSize = 5;
       int tries = DEF_TRIES;
       String link = "";
-      String command = OpHelp.command(message, "Youtube");
-      if(command.length() != 0)
+
+      if(cmd.size() >= 2 && cmd.get(1).equalsIgnoreCase("Youtube"))
       {
          try
          {
@@ -47,7 +48,7 @@ public class ZoraelMod extends Module
       }
       else
       {
-         if(OpHelp.command(message, "deepsearch").length() != 0)
+         if(cmd.size() >= 2 && cmd.get(1).equalsIgnoreCase("deepsearch"))
          {
             linkSize = 7;
             bot.sendMessage(channel, 
@@ -56,7 +57,6 @@ public class ZoraelMod extends Module
             tries = DEF_DEEP_TRIES;
          }
          
-
          try
          {
             link = generateRandILink("http://i.imgur.com/",linkSize, tries);
@@ -86,9 +86,9 @@ public class ZoraelMod extends Module
    }
 
    public void onPrivateMessage(String sender, String login, 
-      String hostname, String message)
+      String hostname, String message, ArrayList<String> cmd)
    {
-      onMessage(sender,sender, login, hostname, message);
+      onMessage(sender,sender, login, hostname, message, cmd);
    }
    
    /**

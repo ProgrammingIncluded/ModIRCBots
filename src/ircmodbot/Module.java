@@ -1,5 +1,5 @@
 package ircmodbot;
-import org.jibble.pircbot.*;
+import java.util.ArrayList;
 
 public abstract class Module 
 {
@@ -41,12 +41,13 @@ public abstract class Module
    }
 
    abstract public void onMessage(String channel, String sender,
-      String login, String hostname, String message);
+      String login, String hostname, String message, ArrayList<String> cmd);
 
    abstract public void onJoin(String channel,String sender, 
-         String login,String hostname);
+         String login, String hostname);
+   
    abstract public void onPrivateMessage(String sender, String login, 
-      String hostname, String message);
+      String hostname, String message, ArrayList<String> cmd);
 
    public boolean setBot(ModBot bot)
    {

@@ -1,5 +1,7 @@
 package modules;
 
+import java.util.ArrayList;
+
 import org.apache.log4j.Logger;
 
 import bank.Bank;
@@ -26,9 +28,9 @@ public class BankMod extends Module
 	
 	@Override
 	public void onMessage(String channel, String sender, String login,
-			String hostname, String message)
+			String hostname, String message, ArrayList<String> cmd)
 	{
-		bot.sendMessage(sender, parseCommand(message));
+		bot.sendMessage(sender, parseCommand(cmd));
 	}
 
 	@Override
@@ -40,22 +42,20 @@ public class BankMod extends Module
 
 	@Override
 	public void onPrivateMessage(String sender, String login, String hostname,
-			String message)
+			String message, ArrayList<String> cmd)
 	{
-		bot.sendMessage(sender, parseCommand(message));
+		bot.sendMessage(sender, parseCommand(cmd));
 	}
 
-	private String parseCommand(String msg)
+	private String parseCommand(ArrayList<String> cmd)
 	{
 		String result = "";
-		String command = OpHelp.subString(msg, 0, msg.indexOf(' '));
-	    msg = OpHelp.subString(msg, msg.indexOf(' ') + 1, msg.length());
 		
-	    if(command == null)
+	    if(cmd.size() < 2)
 	    	return "Invalid command.";
 	    	
-		if(command.equalsIgnoreCase("cur"))
-	    	result = checkCurrency(msg);
+		if(cmd.get(1).equalsIgnoreCase("cur"))
+	    	result = checkCurrency(cmd);
 	    else
 	    	result = "No valid command given.";
 	    
@@ -67,24 +67,22 @@ public class BankMod extends Module
 	 * Should be formatted as: user (currency)
 	 * if currency is not given, uses default currency.
 	 */
-	private String checkCurrency(String msg)
+	private String checkCurrency(ArrayList<String> cmd)
 	{
-		String result = "";
-		String user = OpHelp.subString(msg, 0, msg.indexOf(' '));
-		// No currency given, so must be user.
-		if(user == null)
-			user = msg;
+		String curr = null;
+		String user;
 		
-		// Get rest of message if applicable.
-	    msg = OpHelp.subString(msg, msg.indexOf(' ') + 1, msg.length());
-	    
-	    if(user == null)
-	    	return "Invalid user.";
-	    
+		if(cmd.size() >= 3)
+			 user = cmd.get(2);
+		else
+			return "Invalid user";
+		
+		if(cmd.size() >= 4)
+			curr = cmd.get(3);
+			
+		
 	    if(bot.getUserBase().getUser(user) == null)
 	    	return "User does not exist in database.";
-	    	
-	    String curr = OpHelp.subString(msg, msg.indexOf(' ') + 1, msg.length());
 	    
 	    if(curr == null)
 	    	return bank.getValue(user).toString();
