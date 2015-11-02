@@ -191,6 +191,11 @@ public class Bank extends FileMemory<Account>
 		return true;
 	}
 	
+	public Conversion getConversion()
+	{
+		return converter;
+	}
+	
 	public String getDefCurrency()
 	{
 		return defCurrency;

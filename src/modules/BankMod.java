@@ -56,10 +56,22 @@ public class BankMod extends Module
 	    	
 		if(cmd.get(1).equalsIgnoreCase("cur"))
 	    	result = checkCurrency(cmd);
+		else if(cmd.get(1).equalsIgnoreCase("opt"))
+			result = showAvailableOptions(cmd);
 	    else
 	    	result = "No valid command given.";
 	    
 		return result;
+	}
+	
+	/**
+	 * Helper function to call in order to get
+	 * @param cmd
+	 * @return
+	 */
+	private String showAvailableOptions(ArrayList<String> cmd)
+	{
+		return "Currently Available Currencies are: " + bank.getConversion().toString();
 	}
 	
 	/**
