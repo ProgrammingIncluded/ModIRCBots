@@ -4,6 +4,7 @@
 # ignore bin directory
 bin/
 lib/
+built/
 
 # ignore files ending in ~
 *~

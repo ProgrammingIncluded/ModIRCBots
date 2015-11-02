@@ -6,8 +6,8 @@ import ircmodbot.Module;
 public class FishMod extends Module
 {
 	private BankMod bMod;
-	private String fisherName = "SKK";
-	private String currencyType = "SUSA";
+	private String fisherName = "Botato";
+	private String currencyType = "FUSH";
 	// Currency = 0.5 * ibs
 	private double fishRate = 0.5;
 	

@@ -18,7 +18,7 @@ public class Conversion
       rates.add(new MutablePair<String, Double>(defCur, new Double(1)));
       // Other currency test rate. 
       rates.add(new MutablePair<String, Double>("SHELL", new Double(2)));
-      rates.add(new MutablePair<String, Double>("SUSA", new Double(5)));
+      rates.add(new MutablePair<String, Double>("FUSH", new Double(5)));
    }
    
    /**
