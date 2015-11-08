@@ -22,7 +22,7 @@ public class ZoraelModClass extends Module
 
    public ZoraelModClass()
    {
-      super("TZOR");
+      super("ZOR");
       this.moduleName = "Zo Zo Mod";
    }
 

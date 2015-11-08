@@ -1,7 +1,12 @@
 String[] cmd =
 {
+   "InfoMod",
+   "ESMod",
    "ZoraelMod",
    "BankMod",
-   "FishMod"
+   "FishMod",
+   "QuoteMod",
+   "TQuoteMod"
 };
+
 LOADER.addScriptName(cmd);

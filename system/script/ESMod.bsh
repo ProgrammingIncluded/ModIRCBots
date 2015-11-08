@@ -1,0 +1,81 @@
+import java.util.ArrayList;
+
+import ircmodbot.Module;
+
+/**
+ * Mod to allow shutdown of the bot remotely.
+ * Requires the user to send a hard coded pass to the bot
+ * which sends a confirmation code back.
+ * 
+ * At this point the confirm code should be sent
+ * and the bot would shut down.
+ * 
+ * Format: Keyword pregen regenPass
+ * 		   Keyword exit randPass
+ * 
+ * Where randPass is given after pregen call.
+ * Pregen command must be called in private message.
+ * 
+ * @author Charles Chen
+ *
+ */
+public class ESModClass extends Module
+{
+   private String regenPass;
+   private String randPass;
+
+   public ESModClass()
+   {
+      super("ESM");
+      moduleName = "Exit System Mod";
+      randPass = Math.random()*100 + "";
+      regenPass = "givemekey";
+   }
+
+   public void onMessage(String channel, String sender,
+      String login, String hostname, String message, ArrayList cmd)
+   {
+	  if(cmd.size() < 3)
+		  return;
+	    	  
+      if(cmd.get(1).equalsIgnoreCase("exit"))
+      {
+         if(cmd.get(2).equals(randPass))
+         {
+            bot.sendMessage(channel, "Shutting down.");
+            System.exit(0);
+         }
+      }
+   }
+
+   public void onPrivateMessage(String sender, String login, 
+      String hostname, String message, ArrayList cmd)
+   {
+      if(cmd.size() < 3)
+    	  return;
+    	  
+      if(cmd.get(1).equalsIgnoreCase("pregen"))
+      {
+         if(cmd.get(2).equals(regenPass))
+         {
+            regenPassword();
+            bot.sendMessage(sender, randPass);
+         }
+      }
+      else
+    	  this.onMessage(sender, sender, login, hostname, message, cmd);
+   }
+
+   public void onJoin(String channel,String sender, 
+      String login,String hostname)
+   {
+      return ;
+   }
+
+   public void regenPassword()
+   {
+      randPass = Math.random()*100+"";
+   }
+}
+
+ESModClass ESMod = new ESModClass();

@@ -2,14 +2,19 @@ import modules.*;
 
 // Enable debugging output.
 BOT.setVerbose(true);
+
+/*
+ * File to use when prebuilt modules are used.
+ */
+
 // Add modules to BOT
 
-BOT.addModule(new ESMod());
-BOT.addModule(new InfoMod());
+//BOT.addModule(new ESMod());
+//BOT.addModule(new InfoMod());
 
-QuoteMod qm = new QuoteMod();
+//QuoteMod qm = new QuoteMod();
 //BOT.addModule(qm);
 //BOT.addModule(new TQuoteMod(qm));
 
-BOT.addModule(new ZoraelMod());
+//BOT.addModule(new ZoraelMod());
 
