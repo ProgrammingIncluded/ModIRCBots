@@ -1,8 +1,6 @@
-import java.io.IOException;
 import java.util.Scanner;
 
 import ircmodbot.*;
-import bsh.EvalError;
 import bsh.Interpreter;
 
 public class Main {

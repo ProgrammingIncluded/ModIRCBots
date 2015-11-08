@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
