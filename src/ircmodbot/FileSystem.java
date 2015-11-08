@@ -24,7 +24,7 @@ public class FileSystem
    // Logger
    private static final Logger LOGGER = Logger.getLogger(FileSystem.class);
    /// Default root directory relative to program directory.
-   static final String DEF_SYSTEM_FOLDER = "system";
+   public static final String DEF_SYSTEM_FOLDER = "system";
    
    /// Var. to hold location of working directory.
    private File root = new File(DEF_SYSTEM_FOLDER);

@@ -1,41 +1,32 @@
+import java.io.IOException;
+
 import ircmodbot.*;
-import modules.BankMod;
-import modules.ESMod;
-import modules.FishMod;
-import modules.InfoMod;
-import modules.QuoteMod;
-import modules.TQuoteMod;
-import modules.ZoraelMod;
+import bsh.EvalError;
+import bsh.Interpreter;
 
 public class Main {
-   public static void main(String[] args) throws Exception {
+   public static void main(String[] args){
 
-      // Now start our bot up.
+      // Set debug bot options.
       ModBot.configure("system/log4j.properties");
-      ModBot bot = new ModBot();
-      // Enable debugging output.
-      bot.setVerbose(true);
-      // Add modules to bot
-      bot.addModule(new ESMod());
-      bot.addModule(new InfoMod());
-
-      QuoteMod qm = new QuoteMod();
-      bot.addModule(qm);
-      bot.addModule(new TQuoteMod(qm));
-      
-      BankMod bm = new BankMod(bot);
-      bot.addModule(bm);
-      bot.addModule(new ZoraelMod());
-      bot.addModule(new FishMod(bm));
-      
-      /*
-      FileManagerMod fm = new FileManagerMod();
-      bot.addModule(fm);
-      fm.addModFileName("testModule");
-      File file = fm.getModFile("testModule", "SuperKaitoKid");
-      PrintWriter out = new PrintWriter(new FileWriter(file, true));
-      out.println("It works!");
-      out.close();
-      */
+      Interpreter inter = new Interpreter();
+      FileSystem defaultFS = new FileSystem();
+      try
+      {
+    	  String mainPath = defaultFS.getFilePath("script/main.bsh").toString();
+    	  inter.source(mainPath);
+      }
+      catch(EvalError e)
+      {
+    	  ModBot.LOGGER.error("Script format error. ", e);
+      }
+      catch(IOException e)
+      {
+    	  ModBot.LOGGER.error("Script does not exist. ", e);
+      }
+      catch(Exception e)
+      {
+    	  ModBot.LOGGER.error("Problem with script: ", e);
+      }
    }
 }

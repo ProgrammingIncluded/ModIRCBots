@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.jibble.pircbot.*;
 
@@ -22,6 +23,8 @@ import org.jibble.pircbot.*;
  */
 public class ModBot extends PircBot 
 {
+	// Default logger for general case use.
+	public static final Logger LOGGER = Logger.getLogger(UserBase.class);
 	private ArrayList<Module> modules;
 	private String channel;
 	private FilePermissions filePerm;
