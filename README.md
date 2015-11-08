@@ -1,4 +1,4 @@
-ModIRCBots - Modules
+ModIRCBots
 ==========
 
 ##About##
@@ -14,7 +14,7 @@ For examples on usage, please see premade Modules.
 
 ## PreMade-Modules: ##
 Premade modules are now located in seperate git repository.
-Please go to: [IRCHackBot-Modules](https://www.github.com/SuperKaitoKid/ModIRCBots-Modules]
+Please go to: [IRCHackBot-Modules](https://www.github.com/SuperKaitoKid/ModIRCBots-Modules)
 
 ## About ModIRCBots ##
 A PircBot Java library that allows simple creation of modules (plugins) for the bot.
