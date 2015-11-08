@@ -22,3 +22,4 @@ Each modules allow flexible capabilities for the bot.
 	   * Apache Commons.Lang
 	   * JSoup
 	   * JSon Simple
+	   * BeanShell
