@@ -25,8 +25,7 @@ public class ModBot extends PircBot
 {
 	// Default logger for general case use.
 	public static final Logger LOGGER = Logger.getLogger(ModBot.class);
-	
-	public final ScriptLoader loader = new ScriptLoader(this);
+
 	private ArrayList<Module> modules;
 	private String channel;
 	private FilePermissions filePerm;
@@ -56,21 +55,17 @@ public class ModBot extends PircBot
 
 		ArrayList<String> cmd =  parseCommand(message);
 		Iterator<Module> it = modules.iterator();
-		for(int x = 0; x < 2; ++x)
+		// Perhaps use list instead in order to search faster?
+		while(it.hasNext())
 		{
-			if(x != 0)
-				it = loader.getModules().iterator();
-			// Perhaps use list instead in order to search faster?
-			while(it.hasNext())
+			currentModule = it.next();
+			trigger = currentModule.getTrigger();
+			if(trigger.length() == 0 ||trigger.equalsIgnoreCase(cmd.get(0)))
 			{
-				currentModule = it.next();
-				trigger = currentModule.getTrigger();
-				if(trigger.length() == 0 ||trigger.equalsIgnoreCase(cmd.get(0)))
-				{
-					currentModule.onMessage(channel, sender, login, hostname, message, cmd);
-				}
+				currentModule.onMessage(channel, sender, login, hostname, message, cmd);
 			}
 		}
+
 	}
 
 	public void onJoin(String channel,String sender, 
@@ -78,20 +73,16 @@ public class ModBot extends PircBot
 	{
 		if(!sender.equalsIgnoreCase(getName()))
 			userBase.registerUser(sender);
-	
+
 		Iterator<Module> it = modules.iterator();
-		
-		for(int x = 0; x < 2; ++x)
+
+		while(it.hasNext())
 		{
-			if(x != 0)
-				it = loader.getModules().iterator();
-			while(it.hasNext())
-			{
-				// Send directly to all modules if needed. Perhaps do a check
-				// of some kind like onMessage?
-				it.next().onJoin(channel, sender, login, hostname);
-			}
+			// Send directly to all modules if needed. Perhaps do a check
+			// of some kind like onMessage?
+			it.next().onJoin(channel, sender, login, hostname);
 		}
+
 	}
 
 	public void onPrivateMessage(String sender, String login, String hostname,
@@ -102,31 +93,26 @@ public class ModBot extends PircBot
 		String trigger;
 
 		ArrayList<String> cmd =  parseCommand(message);
-		
+
 		Iterator<Module> it = modules.iterator();
 		// Perhaps use list instead in order to search faster?
-		for(int x = 0; x < 2; ++x)
+		while(it.hasNext())
 		{
-			if(x != 0)
-				it = loader.getModules().iterator();
-			
-			while(it.hasNext())
+			currentModule = it.next();
+			trigger = currentModule.getTrigger();
+			if(trigger.length() == 0 || trigger.equalsIgnoreCase(cmd.get(0)))
 			{
-				currentModule = it.next();
-				trigger = currentModule.getTrigger();
-				if(trigger.length() == 0 || trigger.equalsIgnoreCase(cmd.get(0)))
-				{
-					currentModule.onPrivateMessage(sender, login, hostname, message, cmd);
-				}
+				currentModule.onPrivateMessage(sender, login, hostname, message, cmd);
 			}
 		}
+
 	}
 
 	// Function to convert command into arraylist. TODO: Move to class.
 	public ArrayList<String> parseCommand(String msg)
 	{
 		ArrayList<String> cmd = new ArrayList<String>();
-		
+
 		if(msg == null)
 			return cmd;
 
@@ -137,7 +123,7 @@ public class ModBot extends PircBot
 				cmd.add(msg.substring(0, index));
 			else 
 				break;
-			
+
 			if(index + 1 < msg.length())
 			{
 				msg = msg.substring(index + 1, msg.length());
@@ -148,10 +134,10 @@ public class ModBot extends PircBot
 				break;
 			}
 		}
-		
+
 		if(msg.length() != 0)
 			cmd.add(msg);
-		
+
 		return cmd;
 	}
 
@@ -161,7 +147,12 @@ public class ModBot extends PircBot
 	{
 		this.channel = channel;
 	}
-	
+
+	public void clearModules()
+	{
+		this.modules.clear();
+	}
+
 	/**
 	 * Function to call when you want to add a bot to the module.
 	 * @param mod
@@ -189,7 +180,7 @@ public class ModBot extends PircBot
 	{
 		return channel;
 	}
-	
+
 	/**
 	 * Gets the user base for user related processing.
 	 */

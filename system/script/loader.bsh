@@ -1,1 +1,7 @@
-FILENAMES.add("Echo");
+String[] cmd =
+{
+   "ZoraelMod",
+   "BankMod",
+   "FishMod"
+};
+LOADER.addScriptName(cmd);

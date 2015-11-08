@@ -1,16 +1,15 @@
-import modules.*; 
+import modules.*;
 
 // Enable debugging output.
-bot.setVerbose(true);
-// Add modules to bot
-bot.addModule(new ESMod());
-bot.addModule(new InfoMod());
+BOT.setVerbose(true);
+// Add modules to BOT
+
+BOT.addModule(new ESMod());
+BOT.addModule(new InfoMod());
 
 QuoteMod qm = new QuoteMod();
-bot.addModule(qm);
-bot.addModule(new TQuoteMod(qm));
+//BOT.addModule(qm);
+//BOT.addModule(new TQuoteMod(qm));
 
-BankMod bm = new BankMod(bot);
-bot.addModule(bm);
-bot.addModule(new ZoraelMod());
-bot.addModule(new FishMod(bm));
+BOT.addModule(new ZoraelMod());
+

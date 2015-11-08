@@ -1,0 +1,105 @@
+package modules;
+
+import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
+
+import bank.Bank;
+import bank.TransactionException;
+import ircmodbot.ModBot;
+import ircmodbot.Module;
+import ircmodbot.OpHelp;
+
+public class BankModClass extends Module
+{
+	private static final Logger LOGGER = Logger.getLogger(BankMod.class);
+	private Bank bank;
+
+	public BankModClass(ModBot bot)
+	{
+		super(bot, "BankMod", "BKM");
+		bank = new Bank(bot.getUserBase());
+	}
+
+	public Bank getBank()
+           
+	{
+		return bank;
+	}
+	
+	public void onMessage(String channel, String sender, String login,
+			String hostname, String message, ArrayList cmd)
+	{
+		bot.sendMessage(sender, parseCommand(cmd));
+	}
+
+	public void onJoin(String channel, String sender, String login,
+			String hostname)
+	{
+		
+	}
+
+	public void onPrivateMessage(String sender, String login, String hostname,
+			String message, ArrayList cmd)
+	{
+		bot.sendMessage(sender, parseCommand(cmd));
+	}
+
+	private String parseCommand(ArrayList cmd)
+	{
+		String result = "";
+		
+	    if(cmd.size() < 2)
+	    	return "Invalid command.";
+	    	
+		if(cmd.get(1).equalsIgnoreCase("cur"))
+	    	result = checkCurrency(cmd);
+		else if(cmd.get(1).equalsIgnoreCase("opt"))
+			result = showAvailableOptions(cmd);
+	    else
+	    	result = "No valid command given.";
+	    
+		return result;
+	}
+	
+	/**
+	 * Helper function to call in order to get
+	 * @param cmd
+	 * @return
+	 */
+	private String showAvailableOptions(ArrayList cmd)
+	{
+		return "Currently Available Currencies are: " + bank.getConversion().toString();
+	}
+	
+	/**
+	 * Function in charge of getting currency value.
+	 * Should be formatted as: user (currency)
+	 * if currency is not given, uses default currency.
+	 */
+	private String checkCurrency(ArrayList cmd)
+	{
+		String curr = null;
+		String user;
+		
+		if(cmd.size() >= 3)
+			 user = cmd.get(2);
+		else
+			return "Invalid user";
+		
+		if(cmd.size() >= 4)
+			curr = cmd.get(3);
+			
+		
+	    if(bot.getUserBase().getUser(user) == null)
+	    	return "User does not exist in database.";
+	    
+	    if(curr == null)
+	    	return bank.getValue(user).toString();
+	    
+	    return bank.getValue(user, curr).toString();
+	}
+
+}
+
+BankModClass BankMod = new BankModClass(BOT);

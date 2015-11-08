@@ -10,36 +10,11 @@ public class Main {
 	
 	private ModBot modBot;
 	public final Interpreter mainInterpreter;
+	public ScriptLoader loader;
 	
 	Main()
 	{
 		mainInterpreter = new Interpreter();
-	}
-	
-	// Helper function for main. Must be present.
-	private boolean setMainScript()
-	{
-		FileSystem defaultFS = new FileSystem();
-		try
-		{
-			String path = defaultFS.getFilePath("script/main.bsh").toString();
-			mainInterpreter.set("bot", modBot);
-			mainInterpreter.source(path);
-			return true;
-		}
-		catch(EvalError e)
-		{
-			ModBot.LOGGER.error("Script format error. ", e);
-		}
-		catch(IOException e)
-		{
-			ModBot.LOGGER.error("Script does not exist. ", e);
-		}
-		catch(Exception e)
-		{
-			ModBot.LOGGER.error("Problem with script: ", e);
-		}
-		return false;
 	}
 	
 	public boolean run()
@@ -51,9 +26,7 @@ public class Main {
 				+ "Using basic properties.");
 		}
 		modBot = new ModBot();
-		
-		if(!setMainScript())
-			return false;
+		loader = new ScriptLoader(modBot);
 		
 		boolean exit = false;
 		String input = "";
@@ -65,7 +38,7 @@ public class Main {
 			if(input.equalsIgnoreCase("exit"))
 				exit = true;
 			else if(input.equalsIgnoreCase("reload"))
-				modBot.loader.reload();
+				loader.reload();
 		}
 		reader.close();
 		return true;

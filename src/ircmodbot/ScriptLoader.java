@@ -18,21 +18,14 @@ public class ScriptLoader extends FileSystem
 	public static final Logger LOGGER = Logger.getLogger(ScriptLoader.class);
 	private Interpreter interpreter;
 	private ArrayList<String> scriptCommands;
-	private ArrayList<Module> mods;
 	
 	private ModBot bot;
 	
-	ScriptLoader(ModBot bot)
+	public ScriptLoader(ModBot bot)
 	{
 		scriptCommands = new ArrayList<String>();
-		mods = new ArrayList<Module>();
 		this.bot = bot;
 		reload();
-	}
-
-	public ArrayList<Module> getModules()
-	{
-		return mods;
 	}
 	
 	public ArrayList<String> getScriptCommands()
@@ -55,7 +48,7 @@ public class ScriptLoader extends FileSystem
 		scriptCommands.addAll(Arrays.asList(names));
 	}
 	
-	public boolean setBot(ModBot bot	)
+	public boolean setBot(ModBot bot)
 	{
 		if(bot == null)
 			return false;
@@ -72,7 +65,7 @@ public class ScriptLoader extends FileSystem
 		try
 		{
 			String path = getFilePath("script/loader.bsh").toString();
-			interpreter.set("FILENAMES", scriptCommands);
+			interpreter.set("LOADER", this);
 			interpreter.source(path); 
 		}
 		catch(EvalError e)
@@ -84,25 +77,49 @@ public class ScriptLoader extends FileSystem
 			System.out.println("No loader file. Please add create loader in scripts/loader.bsh");
 		}	
 		
-		if(scriptCommands == null)
-			scriptCommands = new ArrayList<String>();
-		
 		return scriptCommands;
 	}
 	
+	private boolean readMainScript()
+	{
+		try
+		{
+			String path = getFilePath("script/main.bsh").toString();
+			interpreter.set("BOT", bot);
+			interpreter.source(path);
+			return true;
+		}
+		catch(EvalError e)
+		{
+			ModBot.LOGGER.error("Script format error. ", e);
+		}
+		catch(IOException e)
+		{
+			ModBot.LOGGER.error("Script does not exist. ", e);
+		}
+		catch(Exception e)
+		{
+			ModBot.LOGGER.error("Problem with script: ", e);
+		}
+		return false;
+	}
+	
 	/**
-	 * Reload scripts. Returns the newly generated mod list.
-	 * Empty list if no file was parsed.
+	 * Reload scripts.
 	 * If loader file D.N.E. at time of call, previously loaded mods are
-	 * still cleared.
+	 * still cleared. Returns true if scripts are loaded correctly returns
+	 * false if parsing went wrong.
 	 */
-	public ArrayList<Module> reload()
+	public boolean reload()
 	{
 		interpreter = new Interpreter();
-		mods.clear();
+		bot.clearModules();
+		
+		readMainScript();
+		
 		if(readLoaderFile().isEmpty())
 		{
-			return mods;
+			return false;
 		}
 		
 		for(String cmd : scriptCommands)
@@ -112,13 +129,14 @@ public class ScriptLoader extends FileSystem
 			try
 			{
 				String mainPath = getFilePath("script/" + cmd + ".bsh").toString();
+				interpreter.set("BOT", bot);
 				interpreter.source(mainPath);
 				Object obj = interpreter.get(cmd);
 				if(!(obj instanceof ircmodbot.Module))
 					throw new Exception("Class is not a Module.");
 				Module mod = (Module) obj;
 				mod.setBot(bot);
-				mods.add(mod);
+				bot.addModule(mod);
 			}
 			catch(EvalError e)
 			{
@@ -133,6 +151,6 @@ public class ScriptLoader extends FileSystem
 				LOGGER.error("Problem with script: ", e);
 			}
 		}
-		return mods;
+		return true;
 	}
 }
