@@ -22,9 +22,15 @@ public class OpHelp
       return false;
    }
 
-   // Custom subString method for those non exception returns.
+   /*
+    * Custom subString method for those non exception returns.
+    * Returns null if index is negative.
+    */
    static public String subString(String str, int index, int endex)
    {
+	  if(index < 0 || endex < 0)
+		  return null;
+	  
       if(str == null || str.length() < index || index == endex
          || endex > str.length())
       {
@@ -42,7 +48,7 @@ public class OpHelp
    static public String command(String str, String command)
    {
       String result = "";
-      if(command == "" || command.length() == 0)
+      if(command == "" || command.length() <= 0)
       {
          return str;
       }

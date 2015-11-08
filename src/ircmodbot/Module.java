@@ -1,5 +1,5 @@
 package ircmodbot;
-import org.jibble.pircbot.*;
+import java.util.ArrayList;
 
 public abstract class Module 
 {
@@ -10,26 +10,29 @@ public abstract class Module
 
    protected Module()
    {
-      this(null, null);
+      this(null, null, null);
    }
 
    protected Module(String triggerWord)
    {
-      this(null, triggerWord);
+      this(null, null, triggerWord);
+   }
+   
+   protected Module(String moduleName, String triggerWord)
+   {
+	   this(null, moduleName, triggerWord);
    }
    
    protected Module(ModBot bot, String moduleName, String triggerWord)
    {
       if(!setBot(bot))
-      {
          bot = null;
-      }
 
       if(!setTrigger(triggerWord))
-      {
-         triggerWord = "ERR" + Math.random() * 10;
-      }
-      moduleName = "Unknownmod" + Math.random();
+         triggerWord = "ERR" + String.valueOf(Math.random()*10);
+      
+      if(!setName(moduleName))
+    	  moduleName = "Unknownmod" + String.valueOf(Math.random());
    }
 
    protected Module(ModBot bot, String triggerWord)
@@ -38,12 +41,13 @@ public abstract class Module
    }
 
    abstract public void onMessage(String channel, String sender,
-      String login, String hostname, String message);
+      String login, String hostname, String message, ArrayList<String> cmd);
 
    abstract public void onJoin(String channel,String sender, 
-         String login,String hostname);
+         String login, String hostname);
+   
    abstract public void onPrivateMessage(String sender, String login, 
-      String hostname, String message);
+      String hostname, String message, ArrayList<String> cmd);
 
    public boolean setBot(ModBot bot)
    {
@@ -65,6 +69,15 @@ public abstract class Module
 
       trigger = triggerWord;
       return true;
+   }
+   
+   public boolean setName(String name)
+   {
+	   if(name == null)
+		   return false;
+	   
+	   moduleName = name;
+	   return true;
    }
 
    public String getTrigger()
