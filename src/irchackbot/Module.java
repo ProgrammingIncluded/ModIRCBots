@@ -1,4 +1,4 @@
-package ircmodbot;
+package irchackbot;
 import java.util.ArrayList;
 
 public abstract class Module 
@@ -6,7 +6,7 @@ public abstract class Module
    protected String trigger;
    protected String moduleName;
 
-   protected ModBot bot;
+   protected HackBot bot;
 
    protected Module()
    {
@@ -23,7 +23,7 @@ public abstract class Module
 	   this(null, moduleName, triggerWord);
    }
    
-   protected Module(ModBot bot, String moduleName, String triggerWord)
+   protected Module(HackBot bot, String moduleName, String triggerWord)
    {
       if(!setBot(bot))
          bot = null;
@@ -35,7 +35,7 @@ public abstract class Module
     	  moduleName = "Unknownmod" + String.valueOf(Math.random());
    }
 
-   protected Module(ModBot bot, String triggerWord)
+   protected Module(HackBot bot, String triggerWord)
    {
       this(bot, null, triggerWord);
    }
@@ -49,7 +49,7 @@ public abstract class Module
    abstract public void onPrivateMessage(String sender, String login, 
       String hostname, String message, ArrayList<String> cmd);
 
-   public boolean setBot(ModBot bot)
+   public boolean setBot(HackBot bot)
    {
       if(bot == null)
       {

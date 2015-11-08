@@ -1,4 +1,4 @@
-package ircmodbot;
+package irchackbot;
 
 import java.util.ArrayList;
 import org.apache.commons.lang3.tuple.MutablePair;

@@ -1,4 +1,4 @@
-package ircmodbot;
+package irchackbot;
 
 /**
  * Class for helping with some parsing with commands. 
