@@ -1,7 +1,4 @@
-import ircmodbot.*;
-import modules.*;
-
-ModBot bot = new ModBot();
+import modules.*; 
 
 // Enable debugging output.
 bot.setVerbose(true);

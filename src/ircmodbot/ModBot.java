@@ -24,7 +24,9 @@ import org.jibble.pircbot.*;
 public class ModBot extends PircBot 
 {
 	// Default logger for general case use.
-	public static final Logger LOGGER = Logger.getLogger(UserBase.class);
+	public static final Logger LOGGER = Logger.getLogger(ModBot.class);
+	
+	public final ScriptLoader loader = new ScriptLoader(this);
 	private ArrayList<Module> modules;
 	private String channel;
 	private FilePermissions filePerm;
@@ -41,7 +43,7 @@ public class ModBot extends PircBot
 	public void onMessage(String channel, String sender,
 			String login, String hostname, String message) 
 	{
-		Iterator<Module> it = modules.iterator();
+
 		Module currentModule;
 		String trigger;
 
@@ -53,14 +55,20 @@ public class ModBot extends PircBot
 			userBase.registerUser(sender);
 
 		ArrayList<String> cmd =  parseCommand(message);
-		// Perhaps use list instead in order to search faster?
-		while(it.hasNext())
+		Iterator<Module> it = modules.iterator();
+		for(int x = 0; x < 2; ++x)
 		{
-			currentModule = it.next();
-			trigger = currentModule.getTrigger();
-			if(trigger.length() == 0 ||trigger.equalsIgnoreCase(cmd.get(0)))
+			if(x != 0)
+				it = loader.getModules().iterator();
+			// Perhaps use list instead in order to search faster?
+			while(it.hasNext())
 			{
-				currentModule.onMessage(channel, sender, login, hostname, message, cmd);
+				currentModule = it.next();
+				trigger = currentModule.getTrigger();
+				if(trigger.length() == 0 ||trigger.equalsIgnoreCase(cmd.get(0)))
+				{
+					currentModule.onMessage(channel, sender, login, hostname, message, cmd);
+				}
 			}
 		}
 	}
@@ -68,45 +76,53 @@ public class ModBot extends PircBot
 	public void onJoin(String channel,String sender, 
 			String login,String hostname) 
 	{
-		Iterator<Module> it = modules.iterator();
 		if(!sender.equalsIgnoreCase(getName()))
 			userBase.registerUser(sender);
-
-		while(it.hasNext())
+	
+		Iterator<Module> it = modules.iterator();
+		
+		for(int x = 0; x < 2; ++x)
 		{
-			// Send directly to all modules if needed. Perhaps do a check
-			// of some kind like onMessage?
-			it.next().onJoin(channel, sender, login, hostname);
+			if(x != 0)
+				it = loader.getModules().iterator();
+			while(it.hasNext())
+			{
+				// Send directly to all modules if needed. Perhaps do a check
+				// of some kind like onMessage?
+				it.next().onJoin(channel, sender, login, hostname);
+			}
 		}
 	}
 
 	public void onPrivateMessage(String sender, String login, String hostname,
 			String message)
 	{
-		Iterator<Module> it = modules.iterator();
+
 		Module currentModule;
 		String trigger;
 
 		ArrayList<String> cmd =  parseCommand(message);
+		
+		Iterator<Module> it = modules.iterator();
 		// Perhaps use list instead in order to search faster?
-		while(it.hasNext())
+		for(int x = 0; x < 2; ++x)
 		{
-			currentModule = it.next();
-			trigger = currentModule.getTrigger();
-			if(trigger.length() == 0 || trigger.equalsIgnoreCase(cmd.get(0)))
+			if(x != 0)
+				it = loader.getModules().iterator();
+			
+			while(it.hasNext())
 			{
-				currentModule.onPrivateMessage(sender, login, hostname, message, cmd);
+				currentModule = it.next();
+				trigger = currentModule.getTrigger();
+				if(trigger.length() == 0 || trigger.equalsIgnoreCase(cmd.get(0)))
+				{
+					currentModule.onPrivateMessage(sender, login, hostname, message, cmd);
+				}
 			}
 		}
 	}
 
-	// Custom function for storing channel name since PircBot
-	// requires channel verification for it to receive channel name.
-	public void addChannelName(String channel)
-	{
-		this.channel = channel;
-	}
-	
+	// Function to convert command into arraylist. TODO: Move to class.
 	public ArrayList<String> parseCommand(String msg)
 	{
 		ArrayList<String> cmd = new ArrayList<String>();
@@ -139,6 +155,13 @@ public class ModBot extends PircBot
 		return cmd;
 	}
 
+	// Custom function for storing channel name since PircBot
+	// requires channel verification for it to receive channel name.
+	public void addChannelName(String channel)
+	{
+		this.channel = channel;
+	}
+	
 	/**
 	 * Function to call when you want to add a bot to the module.
 	 * @param mod

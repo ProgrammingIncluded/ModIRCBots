@@ -1,0 +1,38 @@
+import java.util.ArrayList;
+
+import ircmodbot.Module;
+import ircmodbot.OpHelp;
+
+
+/**
+ * A simple dummy test module.
+ */
+public class EchoMod extends Module
+{
+   EchoMod()
+   {
+      super("ECHO");
+      moduleName = "ECHO";
+   }
+
+   public void onMessage(String channel, String sender,
+      String login, String hostname, String message, ArrayList cmd)
+   {
+      bot.sendMessage(channel, "Echo: " + OpHelp.command( message, this.getTrigger()));
+   }
+
+   public void onJoin(String channel,String sender, 
+      String login,String hostname)
+   {
+
+   }
+
+   public void onPrivateMessage(String sender, String login, 
+      String hostname, String message, ArrayList cmd)
+   {
+      
+   }
+}
+
+EchoMod Echo = new EchoMod();
+
