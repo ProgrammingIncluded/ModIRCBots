@@ -1,12 +1,12 @@
 import java.util.Scanner;
 
-import irchackbot.*;
+import ircmodbot.*;
 import bsh.Interpreter;
 
 public class Main {
 	
 	
-	private HackBot modBot;
+	private ModBot modBot;
 	public final Interpreter mainInterpreter;
 	public ScriptLoader loader;
 	
@@ -18,12 +18,12 @@ public class Main {
 	public boolean run()
 	{
 		// Set debug bot options.
-		if(!HackBot.configure("system/log4j.properties"))
+		if(!ModBot.configure("system/log4j.properties"))
 		{
 			System.out.println("No custom properties at system/log4j.properties. "
 				+ "Using basic properties.");
 		}
-		modBot = new HackBot();
+		modBot = new ModBot();
 		loader = new ScriptLoader(modBot);
 		
 		boolean exit = false;

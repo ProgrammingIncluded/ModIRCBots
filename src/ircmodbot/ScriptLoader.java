@@ -1,4 +1,4 @@
-package irchackbot;
+package ircmodbot;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,9 +19,9 @@ public class ScriptLoader extends FileSystem
 	private Interpreter interpreter;
 	private ArrayList<String> scriptCommands;
 	
-	private HackBot bot;
+	private ModBot bot;
 	
-	public ScriptLoader(HackBot bot)
+	public ScriptLoader(ModBot bot)
 	{
 		scriptCommands = new ArrayList<String>();
 		this.bot = bot;
@@ -48,7 +48,7 @@ public class ScriptLoader extends FileSystem
 		scriptCommands.addAll(Arrays.asList(names));
 	}
 	
-	public boolean setBot(HackBot bot)
+	public boolean setBot(ModBot bot)
 	{
 		if(bot == null)
 			return false;
@@ -91,15 +91,15 @@ public class ScriptLoader extends FileSystem
 		}
 		catch(EvalError e)
 		{
-			HackBot.LOGGER.error("Script format error. ", e);
+			ModBot.LOGGER.error("Script format error. ", e);
 		}
 		catch(IOException e)
 		{
-			HackBot.LOGGER.error("Script does not exist. ", e);
+			ModBot.LOGGER.error("Script does not exist. ", e);
 		}
 		catch(Exception e)
 		{
-			HackBot.LOGGER.error("Problem with script: ", e);
+			ModBot.LOGGER.error("Problem with script: ", e);
 		}
 		return false;
 	}
@@ -132,7 +132,7 @@ public class ScriptLoader extends FileSystem
 				interpreter.set("BOT", bot);
 				interpreter.source(mainPath);
 				Object obj = interpreter.get(cmd);
-				if(!(obj instanceof irchackbot.Module))
+				if(!(obj instanceof ircmodbot.Module))
 					throw new Exception("Class is not a Module.");
 				Module mod = (Module) obj;
 				mod.setBot(bot);

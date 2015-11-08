@@ -1,4 +1,4 @@
-package irchackbot;
+package ircmodbot;
 
 import java.io.File;
 import java.io.FileReader;

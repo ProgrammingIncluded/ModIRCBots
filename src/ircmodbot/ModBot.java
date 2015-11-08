@@ -1,4 +1,4 @@
-package irchackbot;
+package ircmodbot;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,17 +21,17 @@ import org.jibble.pircbot.*;
  * @author Charles
  *
  */
-public class HackBot extends PircBot 
+public class ModBot extends PircBot 
 {
 	// Default logger for general case use.
-	public static final Logger LOGGER = Logger.getLogger(HackBot.class);
+	public static final Logger LOGGER = Logger.getLogger(ModBot.class);
 
 	private ArrayList<Module> modules;
 	private String channel;
 	private FilePermissions filePerm;
 	private UserBase userBase;
 
-	public HackBot()
+	public ModBot()
 	{
 		modules = new ArrayList<Module>();
 		filePerm = new FilePermissions("whitelist.txt", "blacklist.txt");
