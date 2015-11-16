@@ -8,7 +8,7 @@ public class Main {
 	
 	private ModBot modBot;
 	public final Interpreter mainInterpreter;
-	public ScriptLoader loader;
+	public GeneralSLoader loader;
 	
 	Main()
 	{
@@ -24,7 +24,7 @@ public class Main {
 				+ "Using basic properties.");
 		}
 		modBot = new ModBot();
-		loader = new ScriptLoader(modBot);
+		loader = new GeneralSLoader(modBot);
 		
 		boolean exit = false;
 		String input = "";
