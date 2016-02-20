@@ -1,6 +1,8 @@
+// Add more mods if you like.
 String[] cmd =
 {
-	
+	"InfoMod",
+	"QuoteMod"
 };
 
 LOADER.addScriptName(cmd);
