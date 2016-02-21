@@ -1,6 +1,0 @@
-String[] cmd =
-{
-	
-};
-
-LOADER.addScriptName(cmd);

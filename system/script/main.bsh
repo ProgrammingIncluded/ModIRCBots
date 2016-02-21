@@ -1,1 +1,9 @@
 BOT.setVerbose(true);
+
+// File to set any settings for Bot as well as add modules.
+
+BOT.addModule(new InfoMod());
+
+QuoteMod qm = new QuoteMod();
+BOT.addModule(qm);
+BOT.addModule(new TQuoteMod(qm));
