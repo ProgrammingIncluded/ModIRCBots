@@ -32,20 +32,26 @@ public class Main {
 		{
 			System.out.print("> ");
 			input = reader.nextLine();
-			parseAdminInput(input);
+			// No admin command given, output to chat.
+			if(!parseAdminInput(input))
+			{
+				modBot.sendMessage(modBot.getChannelName(), input);
+			}
 		}
 		reader.close();
 		return true;
 	}
 
-	private void parseAdminInput(String input)
+	private boolean parseAdminInput(String input)
 	{
-		if(input.equalsIgnoreCase("exit"))
+		if(input.equalsIgnoreCase("/exit"))
 			exit = true;
-		else if(input.equalsIgnoreCase("reload"))
+		else if(input.equalsIgnoreCase("/reload"))
 			loader.reload();
-		//else if(input.equalsIgnoreCase("reloadAdmin"))
-			
+		else
+			return false;
+
+		return true;
 	}
 	
 	public static void main(String[] args)

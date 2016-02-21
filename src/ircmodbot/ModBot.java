@@ -205,7 +205,8 @@ public class ModBot extends PircBot
 			Connect.LOGGER.error("Name already in use.", e);
 			System.exit(1);
 		}
-		this.joinChannel(connect.getChannelName());
+		this.addChannelName(connect.getChannelName());
+		this.joinChannel(this.channel);
 	}
 
 	/**
