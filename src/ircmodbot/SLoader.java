@@ -8,15 +8,22 @@ import org.apache.log4j.Logger;
 import bsh.EvalError;
 import bsh.Interpreter;
 
+/**
+ * Abstract class to framework general script loading from file.
+ * Generalized so various implementations of read the scripts can be performed.
+ * @author Charles
+ *
+ */
 public abstract class SLoader extends FileSystem {
 	public static final Logger LOGGER = Logger.getLogger(GeneralSLoader.class);
-	private Interpreter interpreter;
-	private ArrayList<String> scriptCommands;
+	protected Interpreter interpreter;
+	protected ArrayList<String> scriptCommands;
 	
-	private ModBot bot;
+	protected ModBot bot;
 	
 	public SLoader(ModBot bot)
 	{
+		interpreter = new Interpreter();
 		scriptCommands = new ArrayList<String>();
 		this.bot = bot;
 		reload();
@@ -68,6 +75,7 @@ public abstract class SLoader extends FileSystem {
 		}
 		catch(Exception e)
 		{
+			LOGGER.error("Unkown loader error.", e);
 			System.out.println("No loader file. Please add create loader in scripts/loader.bsh");
 		}	
 		

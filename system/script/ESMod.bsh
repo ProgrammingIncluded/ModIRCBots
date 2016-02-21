@@ -19,12 +19,12 @@ import ircmodbot.Module;
  * @author Charles Chen
  *
  */
-public class ESModClass extends Module
+public class ESMod extends Module
 {
    private String regenPass;
    private String randPass;
 
-   public ESModClass()
+   public ESMod()
    {
       super("ESM");
       moduleName = "Exit System Mod";
@@ -77,5 +77,3 @@ public class ESModClass extends Module
       randPass = Math.random()*100+"";
    }
 }
-
-ESModClass ESMod = new ESModClass();

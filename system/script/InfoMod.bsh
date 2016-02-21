@@ -12,9 +12,9 @@ import java.util.Iterator;
  * @author Charles Chen
  *
  */
-public class InfoModClass extends Module
+public class InfoMod extends Module
 {
-   public InfoModClass()
+   public InfoMod()
    {
       super("SKKI");
       moduleName = "InfoMod";
@@ -89,5 +89,3 @@ public class InfoModClass extends Module
    }
 
 }
-
-InfoModClass InfoMod = new InfoModClass();

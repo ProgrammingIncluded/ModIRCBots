@@ -13,15 +13,15 @@ import org.jibble.pircbot.User;
  * @author Charles
  *
  */
-public class TQuoteModClass extends Module
+public class TQuoteMod extends Module
 {
    private ArrayList user;
    private ArrayList chances;
-   private QuoteModClass qm;
+   private QuoteMod qm;
    private int MAX_PHASE;
    private String TARGET_PHRASE;
 
-   public TQuoteModClass(QuoteModClass qMod)
+   public TQuoteMod(QuoteMod qMod)
    {
       super("");
       qm = qMod;
@@ -109,5 +109,3 @@ public class TQuoteModClass extends Module
       return false;
    }
 }
-
-TQuoteModClass TQuoteMod = new TQuoteModClass(QuoteMod);

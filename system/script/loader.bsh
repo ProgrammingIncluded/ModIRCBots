@@ -2,7 +2,8 @@
 String[] cmd =
 {
 	"InfoMod",
-	"QuoteMod"
+	"QuoteMod",
+	"TQuoteMod"
 };
 
 LOADER.addScriptName(cmd);

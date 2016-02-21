@@ -16,9 +16,9 @@ import org.jibble.pircbot.Colors;
  * @author Charles Chen
  *
  */
-public class QuoteModClass extends Module
+public class QuoteMod extends Module
 {
-   public QuoteModClass()
+   public QuoteMod()
    {
       super("QM");
       moduleName = "Quoting Mod";
@@ -114,5 +114,3 @@ public class QuoteModClass extends Module
       return color;
    }
 }
-
-QuoteModClass QuoteMod = new QuoteModClass();

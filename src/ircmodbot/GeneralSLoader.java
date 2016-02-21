@@ -16,11 +16,7 @@ import bsh.Interpreter;
 public class GeneralSLoader extends SLoader
 {
 	public static final Logger LOGGER = Logger.getLogger(GeneralSLoader.class);
-	private Interpreter interpreter;
-	private ArrayList<String> scriptCommands;
-	
-	private ModBot bot;
-	
+
 	public GeneralSLoader(ModBot bot)
 	{
 		super(bot);
@@ -30,6 +26,7 @@ public class GeneralSLoader extends SLoader
 	{
 		try
 		{
+			// TODO: Change to constant?
 			String path = getFilePath("script/main.bsh").toString();
 			interpreter.set("BOT", bot);
 			interpreter.source(path);
@@ -58,10 +55,7 @@ public class GeneralSLoader extends SLoader
 	 */
 	public boolean reload()
 	{
-		interpreter = new Interpreter();
 		bot.clearModules();
-		
-		readMainScript();
 		
 		if(readLoaderFile().isEmpty())
 		{
@@ -77,12 +71,12 @@ public class GeneralSLoader extends SLoader
 				String mainPath = getFilePath("script/" + cmd + ".bsh").toString();
 				interpreter.set("BOT", bot);
 				interpreter.source(mainPath);
-				Object obj = interpreter.get(cmd);
-				if(!(obj instanceof ircmodbot.Module))
-					throw new Exception("Class is not a Module.");
-				Module mod = (Module) obj;
-				mod.setBot(bot);
-				bot.addModule(mod);
+				//Object obj = interpreter.eval(cmd);
+				//if(!(obj instanceof ircmodbot.Module))
+					//throw new Exception("Class is not a Module.");
+				//Module mod = (Module) obj;
+				//mod.setBot(bot);
+				//bot.addModule(mod);
 			}
 			catch(EvalError e)
 			{
@@ -97,6 +91,7 @@ public class GeneralSLoader extends SLoader
 				LOGGER.error("Problem with script: ", e);
 			}
 		}
+		readMainScript();
 		return true;
 	}
 }

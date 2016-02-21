@@ -5,5 +5,6 @@ BOT.setVerbose(true);
 BOT.addModule(new InfoMod());
 
 QuoteMod qm = new QuoteMod();
+
 BOT.addModule(qm);
 BOT.addModule(new TQuoteMod(qm));
