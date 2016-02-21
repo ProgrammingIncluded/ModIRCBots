@@ -3,7 +3,6 @@ package ircmodbot;
 public class FormatSLoader extends SLoader {
 
 	public FormatSLoader(ModBot bot) {
-		super(bot);
 		// TODO Auto-generated constructor stub
 	}
 

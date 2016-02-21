@@ -18,15 +18,38 @@ public abstract class SLoader extends FileSystem {
 	public static final Logger LOGGER = Logger.getLogger(GeneralSLoader.class);
 	protected Interpreter interpreter;
 	protected ArrayList<String> scriptCommands;
+	protected ArrayList<String> scriptFolder;
+
+	protected String loaderFile = "loader.bsh";
 	
-	protected ModBot bot;
-	
-	public SLoader(ModBot bot)
+	public SLoader()
 	{
+		this(null);
+	}
+	
+	public SLoader(String root)
+	{
+		if(root != null)
+			this.setRoot(root);
+
 		interpreter = new Interpreter();
 		scriptCommands = new ArrayList<String>();
-		this.bot = bot;
-		reload();
+		scriptFolder = new ArrayList<String>();
+		readLoaderFile();
+	}
+	
+	public boolean setLoaderFile(String loaderFile)
+	{
+		if(loaderFile == null)
+			return false;
+		
+		this.loaderFile = loaderFile;
+		return true;
+	}
+
+	public String getLoaderFile()
+	{
+		return loaderFile;
 	}
 	
 	public ArrayList<String> getScriptCommands()
@@ -49,23 +72,31 @@ public abstract class SLoader extends FileSystem {
 		scriptCommands.addAll(Arrays.asList(names));
 	}
 	
-	public boolean setBot(ModBot bot)
+	public void addScriptFolder(String folder)
 	{
-		if(bot == null)
-			return false;
-		this.bot = bot;
-		return true;
+		scriptFolder.add(folder);
+	}
+	
+	public void addScriptFolder(ArrayList<String> names)
+	{
+		scriptFolder.addAll(names);
+	}
+	
+	public void addScriptFolder(String[] names)
+	{
+		scriptFolder.addAll(Arrays.asList(names));
 	}
 	
 	/**
 	 * Reads the loader file.
 	 */
-	public ArrayList<String> readLoaderFile()
+	protected void readLoaderFile()
 	{
 		scriptCommands.clear();
+		scriptFolder.clear();
 		try
 		{
-			String path = getFilePath("script/loader.bsh").toString();
+			String path = getFilePath(loaderFile).toString();
 			interpreter.set("LOADER", this);
 			interpreter.source(path); 
 		}
@@ -78,8 +109,6 @@ public abstract class SLoader extends FileSystem {
 			LOGGER.error("Unkown loader error.", e);
 			System.out.println("No loader file. Please add create loader in scripts/loader.bsh");
 		}	
-		
-		return scriptCommands;
 	}
 	
 	public abstract boolean reload();
